@@ -173,6 +173,9 @@ IMAGE_INSTALL:append = "systemd-init-install \
                         python3-chardet \
                         python3-jinja2 \
                         systemready-scripts \
+                        pango \
+                        cairo \
+                        gdk-pixbuf \
 			dejavu-fonts \
 			python3-cssselect2 \
 			python3-fonttools \
