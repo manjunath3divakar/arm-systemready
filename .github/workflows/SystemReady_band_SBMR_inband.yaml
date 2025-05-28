@@ -18,7 +18,8 @@ jobs:
     strategy:
       matrix:
         env:
-        - ARCH: x86_64
+          - ARCH: x86_64
+
     steps:
     - name: Maximize build space
       uses: easimon/maximize-build-space@master
