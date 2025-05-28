@@ -49,3 +49,7 @@ jobs:
         name: systemready_acs_live_image_sbmr_inband.img.xz
         path: SystemReady-band/output/systemready_acs_live_image.img.xz
         if-no-files-found: error
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 1
+        ref: v24.03_SR_REL2.1.0_ES_REL1.4.0_IR_REL2.1.1
