@@ -2,14 +2,14 @@ name: SystemReady band ACS build with SBMR in-band
 
 on:
   push:
-    branches:             # trigger on push to server-base-manageability-requirements-acs
-      - server-base-manageability-requirements-acs
-  pull_request:           # trigger on pull requests to server-base-manageability-requirements-acs
     branches:
       - server-base-manageability-requirements-acs
-  workflow_dispatch:      # to dispatch from Github Actions
+  pull_request:
+    branches:
+      - server-base-manageability-requirements-acs
+  workflow_dispatch:
   schedule:
-    - cron: '30 23 * * 6' # scheduled every Sunday at 5:00 AM IST
+    - cron: '30 23 * * 6' # Every Sunday at 5:00 AM IST
 
 jobs:
   build_image:
@@ -28,23 +28,29 @@ jobs:
         remove-haskell: 'true'
         remove-codeql: 'true'
         remove-docker-images: 'true'
-    - uses: actions/checkout@v4
+
+    - name: Checkout SystemReady-band code at tag
+      uses: actions/checkout@v4
       with:
         fetch-depth: 1
         ref: v24.03_SR_REL2.1.0_ES_REL1.4.0_IR_REL2.1.1
+
     - name: Install gnu-efi dependencies
       run: |
         sudo apt update
         sudo apt install -y gnu-efi
+
     - name: Start building
-      run:
-        sudo -s;
-        git config --global user.name "arm-systemready";
-        git config --global user.email "arm-systemready@arm.com";
-        cd SystemReady-band;
-        ./build-scripts/get_source.sh;
+      run: |
+        sudo -s
+        git config --global user.name "arm-systemready"
+        git config --global user.email "arm-systemready@arm.com"
+        cd SystemReady-band
+        ./build-scripts/get_source.sh
         ./build-scripts/build-systemready-band-live-image.sh
-    - uses: actions/upload-artifact@v4
+
+    - name: Upload SystemReady image artifact
+      uses: actions/upload-artifact@v4
       with:
         name: systemready_acs_live_image_sbmr_inband.img.xz
         path: SystemReady-band/output/systemready_acs_live_image.img.xz
