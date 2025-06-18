@@ -199,7 +199,7 @@ if __name__ == "__main__":
                 print_color(f"INFO: Ping to www.arm.com is successful", "green")
 
             # Checking connectivity using wget
-            wget_command = f"wget --spider -q --timeout=10 --tries=2 --bind-address={intrf} https://www.arm.com"
+            wget_command = f"wget --spider --timeout=10 https://www.arm.com"
             print_color(f"INFO: Running {wget_command} :", "green")
             result_wget = subprocess.run(wget_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=False)
             if result_wget.returncode != 0:
