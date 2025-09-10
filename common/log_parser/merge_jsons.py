@@ -128,14 +128,15 @@ def count_fails_in_json(data):
                 # e.g. { "FAILED": 1, "FAILED_WITH_WAIVER": 1, ... }
                 f = res.get("FAILED", 0)
                 fw = res.get("FAILED_WITH_WAIVER", 0)
-                total_failed += (f + fw)
+                total_failed += f
                 total_failed_with_waiver += fw
             elif isinstance(res, str):
                 # e.g. "FAILED (WITH WAIVER)"
                 if "FAILED" in res.upper() or "FAILURE" in res.upper() or "FAIL" in res.upper():
-                    total_failed += 1
                     if "(WITH WAIVER)" in res.upper():
                         total_failed_with_waiver += 1
+                    else
+                        total_failed +=1
 
     # If we found zero subtests across the entire suite => treat that as a fail
     if not any_subtests_found:
@@ -419,7 +420,7 @@ def merge_json_files(json_files, output_file):
                 else:
                     print(f"Suite: Recommended: {suite_name}: {acs_results_summary[label]}")
             elif f == fw:
-                acs_results_summary[label] = "Compliant with waivers"
+                acs_results_summary[label] = f"Compliant with waivers: Waivers {fw}"
                 if requirement == "M":
                     print(f"Suite: Mandatory  : {suite_name}: {acs_results_summary[label]}")
                 else:
