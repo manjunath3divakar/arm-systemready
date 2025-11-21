@@ -13,12 +13,12 @@ When executed with a **SystemReady DT image**, the script runs automatically as 
 - Python 3.x
 - Linux tools:
   - `ip`
-  - `ifconfig`
   - `ethtool`
   - `ping`
   - `wget`
   - `curl`
-
+  - `udhcpc` or `dhclient`
+    
 ### For standalone use on other systems:
 
 1. Install the tools if missing:
@@ -50,8 +50,8 @@ The script performs diagnostics in a staged manner for each detected Ethernet in
    The script uses `ip -o link` to list all network interfaces and selects only those marked as Ethernet (`ether` in the output). These are added to a test list.
 
 2. **Pre-test setup**  
-   All Ethernet interfaces are brought down using `ip link set`. This is a preparatory step to ensure clean initialization before tests begin.
-
+   All **physical** Ethernet interfaces are brought down using `ip link set` (virtual interfaces are detected and skipped).
+   
 3. **Interface-by-Interface testing**  
    Interfaces are brought up and tested one at a time. The previous interface is brought down before the next is activated, maintaining test isolation.
 
@@ -62,7 +62,7 @@ The script performs diagnostics in a staged manner for each detected Ethernet in
    If the interface driver supports it (`supports-test: yes` from `ethtool -i`), the script runs `ethtool -t` to perform a self-test. Results are logged for review.
 
 6. **Link status verification**  
-   The script checks for `Link detected: yes` in the `ethtool` output. If ethtool is not present, the script falls back to sysfs (/sys/class/net/<iface>/{carrier,operstate}) for link status, and mark “ethtool present: NO”. The interface is skipped from further testing.
+   The script checks for `Link detected: yes` in the `ethtool` output. If ethtool is not present, the script falls back to sysfs (/sys/class/net/<iface>/{carrier,operstate}) for link status, and mark “ethtool present: NO”. The interface is skipped from further testing if the link is not detected.
 
 7. **DHCP address check**  
    Using `ip address show`, the script verifies that a dynamic (DHCP-assigned) IPv4 address is present. If not, it skips gateway and external connectivity checks.
@@ -74,7 +74,7 @@ The script performs diagnostics in a staged manner for each detected Ethernet in
    If the gateway ping is successful, the script pings `www.arm.com` to confirm DNS resolution and routing. `wget` and `curl` are used to verify HTTPS connectivity to `https://www.arm.com`.
 
 10. **Iteration and completion**  
-   After testing an interface, it is brought down, and the script proceeds to the next one. Once all interfaces are tested, the script exits by printing a detailed summary restoring the original state of all interfaces.
+   After testing an interface, it is brought down, and the script proceeds to the next one. Once all interfaces are tested, the script exits by printing a detailed summary and restoring the original state of all interfaces.
 
 ---
 
@@ -83,57 +83,34 @@ The script performs diagnostics in a staged manner for each detected Ethernet in
 Before processing each Ethernet interface through the flowchart, the script:
 
 1. Detects all Ethernet interfaces using the `ip` command.
-2. Bring down all interfaces to ensure a controlled and isolated testing environment.
+2. Bring down all physical interfaces to ensure a controlled and isolated testing environment (virtual interfaces are detected and skipped)
    
 Then, for each interface, it proceeds through the validation and connectivity checks shown below.
 
 ```mermaid
 flowchart TD
-  A([Start]) --> B[Detect Ethernet interfaces via ip]
-  B --> C[Classify: virtual vs physical]
-  C -->|virtual| C1[Mark SKIPPED for Bring up and all tests]
-  C -->|physical| D[Capture original states]
-  D --> E[Bring down all physical ifaces]
-  E --> F[For each physical iface]
-  F --> G[Bring up iface (ip link set up)]
-  G --> H{ethtool present?}
-  H -->|yes| I[Dump ethtool / ethtool -i]
-  I --> J{supports-test: yes?}
-  J -->|yes| K[Run ethtool -t (timeout-safe)]
-  J -->|no| L[Mark Self-test SKIPPED]
-  H -->|no| M[Use sysfs carrier/operstate]
-
-  %% Link detection result
-  K --> N{Link detected?}
-  L --> N
-  M --> N
-  N -->|no| N0[Mark Link WARNING; Skip IPv4/IPv6/wget/curl] --> Z([Next iface])
-  N -->|yes| O[Read ip addr show]
-
-  %% IPv6 branch
-  O --> P{Global IPv6 present?}
-  P -->|yes| Q[ping ipv6.google.com] --> R[Record IPv6 result]
-  P -->|no| R[Mark IPv6 tests SKIPPED]
-
-  %% IPv4 + route branch
-  O --> S{Any IPv4 present?}
-  S -->|no| S0[Mark IPv4 FAILED; Skip IPv4-dependent tests] --> Z
-  S -->|yes| T{Default route via iface?}
-  T -->|no| T0[Try DHCP restore (udhcpc/dhclient) and recheck]
-  T0 --> T1{Route present now?}
-  T1 -->|no| U[Gateway Address FAILED; Skip pings & wget/curl] --> Z
-  T1 -->|yes| V[ip route get 8.8.8.8 → parse gw, dev]
-  T -->|yes| V
-
-  V --> W{dev == current iface?}
-  W -->|no| W0[Skip IPv4 tests (route uses other dev)] --> Z
-  W -->|yes| X[Ping gateway (IPv4)]
-  X --> Y[Ping www.arm.com (IPv4)]
-  Y --> Y1[wget --spider & curl -Is https://www.arm.com]
-  Y1 --> Z([Next iface])
-
-  Z --> AA[Restore original states; Print SUMMARY]
-  AA --> End([End])
+    Start([Start]) --> C[Bring up the interface]
+    C --> E1{ethtool present?}
+    E1 -->|no| G[Link detection check]
+    E1 -->|yes| D[ethtool &lt;iface&gt; NIC info dump]
+    D --> E{supports-test: yes?}
+    E -->|yes| F[ethtool -t self-test]
+    E -->|no| G
+    F --> G
+    G --> H{Link detected?}
+    H -->|yes| I[DHCP check]
+    H -->|no| End([End])
+    I --> J{DHCP configured?}
+    J -->|yes| K[Gateway IP discovery]
+    J -->|no| End
+    K --> L{Gateway IP found?}
+    L -->|yes| M[Ping to gateway]
+    L -->|no| End
+    M --> N{Ping successful?}
+    N -->|yes| O[Ping to external website]
+    N -->|yes| P[wget connectivity test]
+    N -->|yes| Q[curl connectivity test]
+    N -->|no| End
 ```
 
 ---
@@ -146,8 +123,7 @@ The script may exit early or skip processing specific interfaces under certain c
 
 The following messages indicate that the entire script will terminate:
 
-- `INFO: No ethernet interfaces detected via ip linux command, Exiting ...`
-- `WARN: Unable to bring down ethernet interface <iface> using ip, Exiting ...`
+- `WARN: No ethernet interfaces detected via ip linux command, Exiting ...`
 - `Error occurred: <exception message>`
 
 ### Per-Interface skip (script continues with next interface)
