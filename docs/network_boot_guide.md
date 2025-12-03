@@ -1,6 +1,6 @@
 # Network Boot Support in SystemReady-DT
 
-This is an overview of **HTTPS Boot** support implemented within the **SystemReady-DT ACS image**
+This is an overview of **Network Boot** support implemented within the **SystemReady-DT ACS image**
 
 ---
 
