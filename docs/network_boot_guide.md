@@ -101,6 +101,8 @@ flowchart TD
 ---
 ## Constraints
  - The current setup requires three config parameters; a more flexible parser is under development and will be supported soon.
+ - WIC format images cannot be used because the boot flow supports only ISO and IMG files.
+ - HTTP redirects cannot be used because the boot loader requires a direct URL
  - ESP detection from UEFI shell is ongoing, so that network boot will be skipped when no valid ESP is present.
  - Failures in U-Boot are not logged and must be debugged from the U-Boot console. Such as,
    - `Cannot persist EFI variables without system partition`
