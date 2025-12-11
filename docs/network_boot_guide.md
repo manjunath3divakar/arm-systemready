@@ -107,7 +107,7 @@ flowchart TD
 
 You can use the ACS image provided for HTTPS/HTTP network-boot testing.
 
-**Network Boot Image:** `[`acs-network-boot-image.img.xz`](../SystemReady-devicetree-band/prebuilt_images/network_boot_image/acs-network-boot-image.img.xz)`
+**Network Boot Image:** [`acs-network-boot-image.img.xz`](../SystemReady-devicetree-band/prebuilt_images/network_boot_image/acs-network-boot-image.img.xz)
 
 To use the pre-built image:
 
