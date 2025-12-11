@@ -94,9 +94,9 @@ flowchart TD
     I -->|no HTTP support| X5[Fallback to ACS Linux]
     I -->|supports HTTP| J[Download image]
 
-    J --> K[Boot minimal HTTPS image]
+    J --> K[Boot network image]
     K --> L[Check pmem support]
-    L -->|pmem missing| X6[Minimal boot fails and Reboot to ACS image]
+    L -->|pmem missing| X6[HTTPS/HTTP network boot fails and Reboot to ACS image]
     L -->|pmem ok| M[Collect logs]
 
     M --> N[Reboot to ACS Image Linux]
@@ -108,7 +108,7 @@ flowchart TD
 
 You can use the ACS image provided for HTTPS/HTTP network-boot testing.
 
-**Minimal Image:** `<URL>`
+**Network Boot Image:** `<URL>`
 
 To use the pre-built image:
 
@@ -128,7 +128,7 @@ Add this URL to `HTTPS_BOOT_IMAGE_URL` in `system_config.txt`.
 ## Limitations
 - Failures in U-Boot are not logged and must be debugged from the U-Boot console.
 - The .wic format images cannot be used (supports .iso and .img)
-- URL to Minimal image should be a direct link; redirects are not allowed.
+- URL to network boot image should be a direct link; redirects are not allowed.
 
 --------------
 *Copyright (c) 2025, Arm Limited and Contributors. All rights reserved.*
