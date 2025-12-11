@@ -29,8 +29,8 @@ The integration includes:
  - U-Boot must have:
    - HTTP support
    - pmem support in the kernel DeviceTree
- - Network boot image kernel must include `pmem` drivers, the provided pre-built acs-minimal image already consists of the requirement
- - Minimal image must include:
+ - Network boot image kernel must include `pmem` drivers, the provided pre-built acs-network-boot-image image already consists of the requirement
+ - Network boot image must include:
    - `lsblk`, `blkid`, `dmesg`
    - Ability to write logs back to `acs_results_template`
 
@@ -58,7 +58,7 @@ Script files path - FSx:\
 ```
 ---
 
-## HTTPS Boot Flow (Updated)
+## HTTPS Boot Flow
 
 1. ACS Linux boots and `init.sh` runs `acs_https_network_boot.sh`, which checks the ESP, validates the HTTPS/HTTP URL from `system_config.txt`, verifies reachability with `wget`, prepares the HTTPS boot configuration, and reboots if everything is valid.
 
@@ -68,7 +68,7 @@ Script files path - FSx:\
 
 4. On the next boot, the U-Boot processes `BootNext`, performs the HTTP(S) download of the remote image, and boots into the minimal ACS HTTPS Boot image provided by that URL.
 
-5. The minimal image runs its init script, collects Linux logs (`lsblk.txt`, `blkid.txt`, `dmesg.txt`), writes them to the ACS results directory, and reboots back into the main ACS SystemReady-DT image.
+5. The network boot image runs its init script, collects Linux logs (`lsblk.txt`, `blkid.txt`, `dmesg.txt`), writes them to the ACS results directory, and reboots back into the main ACS SystemReady-DT image.
 
 6. On the subsequent ACS Linux boot, `init.sh` detects that a network boot sequence ran and calls `acs_network_boot_parser.sh`, which checks that the logs are present, writes `Network_Boot_Result: PASSED/FAILED`, skips ACS tests, and exits to the Linux prompt.
 
@@ -104,23 +104,23 @@ flowchart TD
 ```
 ---
 
-## ACS Minimal Image
+## ACS Network Boot Image
 
-You can use the ACS Minimal Image provided for HTTPS/HTTP network-boot testing.
+You can use the ACS image provided for HTTPS/HTTP network-boot testing.
 
 **Minimal Image:** `<URL>`
 
 To use the pre-built image:
 
 - Download and extract the image:  
-  `xz -d <acs-minimal.img.xz>`
+  `xz -d <acs-network-boot-image.img.xz>`
 
 - Host the image on a local HTTP server (example):  
   `python3 -m http.server 8000`
    *(You may replace 8000 with any unused port)*
 
 - Access the image using:  
-  `http://<local-host-ip>:8000/<acs-minimal.img>`
+  `http://<local-host-ip>:8000/<acs-network-boot-image.img>`
 
 Add this URL to `HTTPS_BOOT_IMAGE_URL` in `system_config.txt`.
 
@@ -130,3 +130,5 @@ Add this URL to `HTTPS_BOOT_IMAGE_URL` in `system_config.txt`.
 - The .wic format images cannot be used (supports .iso and .img)
 - URL to Minimal image should be a direct link; redirects are not allowed.
 
+--------------
+*Copyright (c) 2025, Arm Limited and Contributors. All rights reserved.*
