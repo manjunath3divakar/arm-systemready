@@ -66,7 +66,7 @@ Script files path - FSx:\
 
 3. `ledge.efi` programs a new UEFI boot option (`Boot####`) that points to the given HTTP(S) URL, sets `BootNext` to that entry, and triggers a reboot.
 
-4. On the next boot, the U-Boot processes `BootNext`, performs the HTTP(S) download of the remote image, and boots into the minimal ACS HTTPS Boot image provided by that URL.
+4. On the next boot, the U-Boot processes `BootNext`, performs the HTTP(S) download of the remote image, and boots into the ACS HTTPS Boot image provided by that URL.
 
 5. The network boot image runs its init script, collects Linux logs (`lsblk.txt`, `blkid.txt`, `dmesg.txt`), writes them to the ACS results directory, and reboots back into the main ACS SystemReady-DT image.
 
