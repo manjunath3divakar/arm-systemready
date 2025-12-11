@@ -105,8 +105,29 @@ flowchart TD
 ```
 ---
 
+## ACS Minimal Image
+
+You can use the ACS Minimal Image provided for HTTPS/HTTP network-boot testing.
+
+**Minimal Image:** `<URL>`
+
+To use the pre-built image:
+
+- Download and extract the image:  
+  `xz -d <acs-minimal.img.xz>`
+
+- Host the image on a local HTTP server (example):  
+  `python3 -m http.server 8000`
+   *(You may replace 8000 with any unused port)*
+
+- Access the image using:  
+  `http://<local-host-ip>:8000/<acs-minimal.img>`
+
+Add this URL to `HTTPS_BOOT_IMAGE_URL` in `system_config.txt`.
+
+---
 ## Limitations
 - Failures in U-Boot are not logged and must be debugged from the U-Boot console.
 - The .wic format images cannot be used (supports .iso and .img)
-- Redirects not allowed
+- URL to Minimal image should be a direct link; redirects are not allowed.
 
