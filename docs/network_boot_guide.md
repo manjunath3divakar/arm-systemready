@@ -28,9 +28,8 @@ The integration includes:
  - System must have a **valid ESP partition**
  - U-Boot must have:
    - HTTP support
-   - A UEFI shell
    - pmem support in the kernel DeviceTree
- - Linux kernel must include `pmem` drivers
+ - Network boot image kernel must include `pmem` drivers, the provided pre-built acs-minimal image already consists of the requirement
  - Minimal image must include:
    - `lsblk`, `blkid`, `dmesg`
    - Ability to write logs back to `acs_results_template`
@@ -41,21 +40,21 @@ The integration includes:
 ```
 Script files path - FSx:\
  ├── acs_tests\
- │    ├── app\
- │    │    ├── ledge.efi
- │    ├── config\
- │    │    └── system_config.txt
- │    └── acs_results_template\
- │         └── acs_results\
- │              └── network_boot\
- │                   ├── https_network_boot_console.log
- │                   ├── network_boot_results.log
- │                   ├── lsblk.txt
- │                   ├── blkid.txt
- │                   └── dmesg.txt
- └── EFI\
-      └── BOOT\
-           ├── https_boot.nsh
+      ├── app\
+      │    ├── ledge.efi
+      │    ├── https_boot.nsh
+      ├── config\
+      │    └── system_config.txt
+      └── acs_results_template\
+           └── acs_results\
+                └── network_boot\
+                     ├── https_network_boot_console.log
+                     ├── network_boot_results.log
+                     ├── lsblk.txt
+                     ├── blkid.txt
+                     └── dmesg.txt
+
+
 ```
 ---
 
