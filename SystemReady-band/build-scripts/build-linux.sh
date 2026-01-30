@@ -90,9 +90,11 @@ do_build ()
     if [[ $arch = "aarch64" ]]
     then
         echo "arm64 machine"
+	make ARCH=arm64 O=$LINUX_OUT_DIR olddefconfig
         make ARCH=arm64 O=$LINUX_OUT_DIR -j$PARALLELISM
     else
-        make ARCH=arm64 CROSS_COMPILE=$TOP_DIR/$GCC O=$LINUX_OUT_DIR -j$PARALLELISM
+        make ARCH=arm64 CROSS_COMPILE=$TOP_DIR/$GCC O=$LINUX_OUT_DIR olddefconfig
+	make ARCH=arm64 CROSS_COMPILE=$TOP_DIR/$GCC O=$LINUX_OUT_DIR -j$PARALLELISM
     fi
     popd
 }

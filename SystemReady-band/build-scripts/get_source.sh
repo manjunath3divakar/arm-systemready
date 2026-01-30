@@ -227,7 +227,7 @@ sudo apt install git curl mtools gdisk gcc \
  openssl automake autotools-dev libtool bison flex\
  bc uuid-dev python3 libglib2.0-dev libssl-dev autopoint \
  make g++ build-essential wget gettext dosfstools unzip \
- sbsigntool uuid-runtime monkeysphere gnu-efi \
+ sbsigntool uuid-runtime gnu-efi \
  libfile-slurp-perl help2man libbsd-dev -y
 
 REL="${DISTRIB_RELEASE//[!0-9]/}"

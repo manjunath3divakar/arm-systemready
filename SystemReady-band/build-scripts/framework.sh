@@ -61,6 +61,8 @@ PLATDIR=${TOP_DIR}/output
 OUTDIR=${PLATDIR}
 LINUX_OUT_DIR=out
 LINUX_PATH=linux-${LINUX_KERNEL_VERSION}
+# Avoid building texinfo docs on hosts lacking a compatible makeinfo
+export MAKEINFO=true
 
 if [ -n "$CLEAN_BUILD" ] && [ "$CLEAN_BUILD" = "C" ]; then
     do_clean
