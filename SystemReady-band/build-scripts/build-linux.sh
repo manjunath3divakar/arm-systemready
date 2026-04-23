@@ -82,6 +82,38 @@ do_build ()
     #Configurations to increase serial ports
     echo "CONFIG_SERIAL_8250_NR_UARTS=32" >> $LINUX_OUT_DIR/.config
     echo "CONFIG_SERIAL_8250_RUNTIME_UARTS=32" >> $LINUX_OUT_DIR/.config
+    echo "CONFIG_BLK_DEV_RAM=y" >> $LINUX_OUT_DIR/.config
+    echo "CONFIG_BLK_DEV_RAM_COUNT=16" >> $LINUX_OUT_DIR/.config
+    echo "CONFIG_BLK_DEV_RAM_SIZE=4096" >> $LINUX_OUT_DIR/.config
+    # IPv6 support
+    echo "CONFIG_INET=y" >> $LINUX_OUT_DIR/.config
+    echo "CONFIG_IPV6=y" >> $LINUX_OUT_DIR/.config
+    echo "CONFIG_IPV6_ROUTER_PREF=y" >> $LINUX_OUT_DIR/.config
+    echo "CONFIG_NETDEVICES=y" >> $LINUX_OUT_DIR/.config
+    echo "CONFIG_DUMMY=m" >> $LINUX_OUT_DIR/.config
+    echo "CONFIG_TUN=y" >> $LINUX_OUT_DIR/.config
+    echo "CONFIG_VETH=y" >> $LINUX_OUT_DIR/.config
+    echo "CONFIG_VLAN_8021Q=y" >> $LINUX_OUT_DIR/.config
+    echo "CONFIG_BRIDGE=y" >> $LINUX_OUT_DIR/.config
+    echo "CONFIG_MACVLAN=y" >> $LINUX_OUT_DIR/.config
+    echo "CONFIG_IPVLAN=y" >> $LINUX_OUT_DIR/.config
+    echo "CONFIG_MLX5_CORE=y" >> $LINUX_OUT_DIR/.config
+    echo "CONFIG_MLX5_CORE_EN=y" >> $LINUX_OUT_DIR/.config
+    echo "CONFIG_NET_VENDOR_MELLANOX=y" >> $LINUX_OUT_DIR/.config
+    echo "CONFIG_USB_NET_DRIVERS=y" >> $LINUX_OUT_DIR/.config
+    echo "CONFIG_USB_USBNET=y" >> $LINUX_OUT_DIR/.config
+    echo "CONFIG_USB_NET_CDCETHER=y" >> $LINUX_OUT_DIR/.config
+    echo "CONFIG_USB_NET_CDC_EEM=y" >> $LINUX_OUT_DIR/.config
+    echo "CONFIG_USB_NET_CDC_NCM=y" >> $LINUX_OUT_DIR/.config
+    echo "CONFIG_USB_NET_RNDIS_HOST=y" >> $LINUX_OUT_DIR/.config
+    echo "CONFIG_USB_NET_AX88179_178A=y" >> $LINUX_OUT_DIR/.config
+    echo "CONFIG_USB_NET_SMSC75XX=y" >> $LINUX_OUT_DIR/.config
+    echo "CONFIG_USB_NET_SMSC95XX=y" >> $LINUX_OUT_DIR/.config
+    echo "CONFIG_USB=y" >> $LINUX_OUT_DIR/.config
+    echo "CONFIG_USB_SUPPORT=y" >> $LINUX_OUT_DIR/.config
+    echo "CONFIG_USB_EHCI_HCD=y" >> $LINUX_OUT_DIR/.config
+    echo "CONFIG_USB_XHCI_HCD=y" >> $LINUX_OUT_DIR/.config
+    echo "CONFIG_USB_COMMON=y" >> $LINUX_OUT_DIR/.config
     cat $SRBAND_DEFCONFIG >> $LINUX_OUT_DIR/.config
     if [[ $arch = "aarch64" ]]; then
         echo "arm64 machine"

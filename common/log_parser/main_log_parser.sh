@@ -630,6 +630,46 @@ if [ $YOCTO_FLAG_PRESENT -eq 1 ]; then
     fi
 fi
 
+# SR Band standalone tests log parsing
+if [ $YOCTO_FLAG_PRESENT -eq 0 ]; then
+    LINUX_TOOLS_LOGS_PATH="$LOGS_PATH/linux_tools"
+    Standalone_JSONS=()
+
+    # 1) ETHTOOL_TEST
+    ETHTOOL_TEST_LOG="$LINUX_TOOLS_LOGS_PATH/ethtool-test.log"
+    ETHTOOL_TEST_JSON="$JSONS_DIR/ethtool_test.json"
+    if check_file "$ETHTOOL_TEST_LOG" "M"; then
+        python3 "$SCRIPTS_PATH/standalone_tests/logs_to_json.py" \
+            "$ETHTOOL_TEST_LOG" \
+            "$ETHTOOL_TEST_JSON"
+        Standalone_JSONS+=("$ETHTOOL_TEST_JSON")
+        apply_waivers "Standalone" "$ETHTOOL_TEST_JSON"
+    fi
+
+    # 2) READ_WRITE_CHECK
+    READ_WRITE_CHECK_LOG="$LINUX_TOOLS_LOGS_PATH/read_write_check_blk_devices.log"
+    READ_WRITE_CHECK_JSON="$JSONS_DIR/read_write_check_blk_devices.json"
+    if check_file "$READ_WRITE_CHECK_LOG" "M"; then
+        python3 "$SCRIPTS_PATH/standalone_tests/logs_to_json.py" \
+            "$READ_WRITE_CHECK_LOG" \
+            "$READ_WRITE_CHECK_JSON"
+        Standalone_JSONS+=("$READ_WRITE_CHECK_JSON")
+        apply_waivers "Standalone" "$READ_WRITE_CHECK_JSON"
+    fi
+
+    if [ ${#Standalone_JSONS[@]} -gt 0 ]; then
+        Standalone_PROCESSED=1
+        Standalone_DETAILED_HTML="$HTMLS_DIR/standalone_tests_detailed.html"
+        Standalone_SUMMARY_HTML="$HTMLS_DIR/standalone_tests_summary.html"
+
+        python3 "$SCRIPTS_PATH/standalone_tests/json_to_html.py" \
+            "${Standalone_JSONS[@]}" \
+            "$Standalone_DETAILED_HTML" \
+            "$Standalone_SUMMARY_HTML" \
+            --include-drop-down
+    fi
+fi
+
 ################################################################################
 # OS TESTS PARSING
 ################################################################################

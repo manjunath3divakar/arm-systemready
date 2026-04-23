@@ -277,6 +277,30 @@ if [ $ADDITIONAL_CMD_OPTION != "noacs" ]; then
         sleep 5
         echo "BLK devices read and write check - Completed"
 
+	echo "Now running with /USR/"
+	echo "Now running with /USR/"
+	echo "Now running with /USR/"
+
+	# ETHTOOL test run
+        echo "Running Ethtool test"
+        # update resolv.conf with 8.8.8.8 DNS server
+        echo "nameserver 8.8.8.8" >> /etc/resolv.conf
+        # run ethtool-test.py, dump ethernet information, run self-tests if supported, and ping
+        python3 /usr/bin/ethtool-test.py /mnt/acs_tests/config/system_config.txt | tee ethtool-test.log
+        # remove color characters from log and save
+        awk '{gsub(/\x1B\[[0-9;]*[JKmsu]/, "")}1' ethtool-test.log > /mnt/acs_results_template/acs_results/linux_tools/ethtool-test.log
+        sync
+        sleep 5
+        echo "Ethtool test run - Completed"
+
+        # READ_WRITE_BLOCK_DEVICE run
+        # RUN read_write_check_blk_devices.py, parse block devices, and perform read if partition doesn't belond in precious partitions
+        echo "Running BLK devices read and write check"
+        python3 /usr/bin/read_write_check_blk_devices.py | tee /mnt/acs_results_template/acs_results/linux_tools/read_write_check_blk_devices.log
+        sync
+        sleep 5
+        echo "BLK devices read and write check - Completed"
+
 
         # SYSTEMREADY-SCRIPTS running
         if [ -d "/mnt/acs_results_template" ]; then

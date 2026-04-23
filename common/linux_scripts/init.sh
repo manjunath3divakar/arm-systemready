@@ -162,10 +162,28 @@ if [ $ADDITIONAL_CMD_OPTION != "noacs" ]; then
 
   # Linux Device Driver script run
   echo "Running Device Driver Matching Script"
-  cd /usr/bin/
+  cd /usr/bin
   ./device_driver_sr.sh > /mnt/acs_results/linux_dump/device_driver.log
   cd -
-  echo "Device Driver script run completed"
+  echo "Device Driver script run - Completed"
+  sync /mnt
+  sleep 5
+
+  # Block Device testing script run
+  echo "Running BLK devices read and write check"
+  cd /usr/bin
+  python3 read_write_check_blk_devices.py | tee /mnt/acs_results/linux_tools/read_write_check_blk_devices.py
+  cd -
+  echo "BLK devices read and write check - Completed"
+  sync /mnt
+  sleep 5
+
+  # Ethtool testing script run
+  echo "Running Ethtool test Script"
+  cd /usr/bin
+  python3 ethtool-test.py | tee /mnt/acs_results/linux_tools/ethtool-test.log
+  cd -
+  echo "Ethtool script run - Completed"
   sync /mnt
   sleep 5
 
