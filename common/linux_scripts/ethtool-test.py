@@ -27,6 +27,7 @@ import signal
 import sys
 import shutil
 from pathlib import Path
+from typing import Dict
 from collections import OrderedDict
 from fnmatch import fnmatch
 
@@ -289,7 +290,7 @@ def print_summary():
             f"({detail})\n"
         )
 
-original_states = {}
+original_states: Dict[str, str] = {}
 
 #To check if a tool is from BusyBox
 def is_busybox_tool(tool_name):

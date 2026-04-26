@@ -26,6 +26,8 @@ By following this guide, users can gain a clear understanding of the verificatio
 | FWTS             | Linux           | Automatic                    | acs_results/fwts/FWTSResults.log       |
 | BBSR-SCT         | UEFI            | Manual**                     | acs_results/BBSR/sct_results/Overall/Summary.log       |
 | BBSR-FWTS        | Linux           | Manual**                     | acs_results/BBSR/fwts/FWTSResults.log       |
+| Block Device test| Linux           | Automatic                    | acs_results/linux_tools/read_write_check_blk_devices.log     |
+| Ethtool          | Linux           | Automatic                    | acs_results/linux_tools/ethtool-test.log     |
 
  - UEFI and Linux#: Complete coverage of BSA and SBSA test suite requires run of both the UEFI application of Linux application
 
