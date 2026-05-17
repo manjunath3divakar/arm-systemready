@@ -326,6 +326,26 @@ flowchart TD
 ```
 ---
 
+### SR Runtime Summary
+
+```text
+GRUB
+  └── SystemReady band ACS (Automation)
+        └── UEFI startup.nsh
+              ├── SCT / BBR / SCRT
+              ├── BSA UEFI
+              ├── SBSA UEFI, if enabled
+              └── reboot / transition to Linux
+                    └── Linux init.sh
+                          ├── FWTS
+                          ├── SBMR, if enabled
+                          ├── BSA Linux
+                          ├── SBSA Linux, if enabled
+                          └── ACS summary generation
+```
+---
+
+
 ## GRUB Boot Menu Options
 
 | Boot Option | Purpose |
