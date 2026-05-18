@@ -156,8 +156,14 @@ flowchart TD
 │       │           └── Boot ACS minimal network image and reset after logs collection 
 │       │           └── 🟥 𝗥𝗘𝗕𝗢𝗢𝗧 
 │       │               └── 🟩 Boot back to main ACS Linux, Run network boot result parser
-│       │
-│       ├── Capsule update result check
+│       ├── 𝗰𝗮𝗽𝘀𝘂𝗹𝗲 𝘂𝗽𝗱𝗮𝘁𝗲
+│       │   ├── Check whether capsule update validation is still pending
+│       │   └── 🟥 𝗥𝗘𝗕𝗢𝗢𝗧 𝗳𝗼𝗿 𝗰𝗮𝗽𝘀𝘂𝗹𝗲 𝘂𝗽𝗱𝗮𝘁𝗲
+│       │       └── 🟧 𝗨𝗘𝗙𝗜 𝗰𝗮𝗽𝘀𝘂𝗹𝗲_𝘂𝗽𝗱𝗮𝘁𝗲.𝗻𝘀𝗵
+│       │           ├── Collect firmware update capability information
+│       │           ├── Run capsule update tests
+│       │           └── 🟩 𝗕𝗼𝗼𝘁 𝗯𝗮𝗰𝗸 𝘁𝗼 𝗟𝗶𝗻𝘂𝘅 𝗶𝗻𝗶𝘁.𝘀𝗵
+│       │               └── Parse capsule update result flags
 │       └── 🟪 𝗥𝗲𝘀𝘂𝗹𝘁 𝗽𝗿𝗼𝗰𝗲𝘀𝘀𝗶𝗻𝗴
 │           ├── EDK2 test parser
 │           ├── SystemReady post scripts
@@ -195,15 +201,12 @@ flowchart TD
         ├── Check Secure Boot state
         ├── Provision Secure Boot keys
         │   └── If not done automatically, provision keys manually
-        │       └── 🟥 𝗥𝗘𝗦𝗘𝗧
-        │           └── Resume BBSR flow from GRUB
         ├── Run BBSR UEFI / SCT flow
         ├── Secure Linux boot
         └── 🟩 Linux secure_init.sh
             ├── Run Linux-side BBSR checks
             ├── Collect BBSR logs
             ├── If Secure Boot is still enabled
-            │   ├── Create clear_secureboot flag
             │   └── 🟥 𝗥𝗘𝗕𝗢𝗢𝗧
             │       └── 🟧 𝗨𝗘𝗙𝗜 𝗦𝗲𝗰𝘂𝗿𝗲 𝗕𝗼𝗼𝘁 𝗰𝗹𝗲𝗮𝗿𝗮𝗻𝗰𝗲
             │           └── 🟥 𝗥𝗘𝗕𝗢𝗢𝗧
@@ -228,8 +231,8 @@ flowchart TD
 |---|---|
 | `acs_config.txt` | Contains ACS and specification version information |
 | `system_config.txt` | Contains platform details used in the final ACS report |
-| `acs_config_dt.txt` | DT-specific ACS configuration template/source |
-| `system_config_dt.txt` | DT-specific system configuration template/source |
+| `acs_config_dt.txt` | DT-specific ACS configuration template |
+| `system_config_dt.txt` | DT-specific system configuration template |
 
 Important DT-related configuration fields:
 
@@ -247,12 +250,12 @@ DT ACS logs and summaries are stored under:
 acs_results_template/acs_results/
 ```
 
-Firmware and capsule-related logs may be stored under:
+Firmware and capsule-related logs are stored under:
 ```text
 acs_results_template/fw/
 ```
 
-Manual OS compliance logs may be stored under:
+Manual OS compliance logs are stored under:
 ```text
 acs_results_template/os-logs/
 ```
