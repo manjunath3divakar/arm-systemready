@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document explains the complete automation flow of the **Arm SystemReady Band ACS** image.
+This document explains the automation flow of the **Arm SystemReady Band ACS** image.
 
 The SystemReady Band ACS image is a bootable validation environment used to run firmware, UEFI, Linux, architecture, and compliance test suites on Arm SystemReady platforms.
 
@@ -11,6 +11,8 @@ The automation flow covers:
 - Image validations
 - SystemReady Band ACS Automation Flow
 - GRUB Boot Menu Options
+- Configuration Files
+- Result Collection
 
 ---
 
@@ -64,8 +66,7 @@ flowchart TD
 
     linkStyle default stroke:#2563eb,stroke-width:4px;
 
-    Start((Start)) --> A["Start SR build flow"]
-    A --> B["Run get_source.sh"]
+    Start((Start)) --> B["Run get_source.sh"]
     B --> C["Fetch ACS and dependent sources"]
     C --> D["Prepare common configs and scripts"]
     D --> E["Apply required patches"]
@@ -98,254 +99,94 @@ flowchart TD
     classDef output fill:#ede9fe,stroke:#7c3aed,stroke-width:3px,color:#0f172a;
 
     class Start,End startEnd;
-    class A,B,C,D,E source;
+    class B,C,D,E source;
     class F,G1,G2,G3,G4,G5 build;
     class H,I,J,K,L package;
     class M output;
 ```
-
 ---
 ### SR Runtime Automation Flow
 
-> **Reboot handling:** Some UEFI test suites reset the platform after execution.  
-> After each reset, the platform returns to GRUB and the automation resumes from `startup.nsh`.  
-> Already-completed suites are skipped or not re-run because their result logs are present.
-
-```mermaid
-
-%%{init: {
-
-  "theme": "base",
-
-  "themeVariables": {
-
-    "fontFamily": "Arial",
-
-    "fontSize": "14px",
-
-    "primaryBorderColor": "#0f172a",
-
-    "lineColor": "#2563eb",
-
-    "tertiaryColor": "#ffffff"
-
-  }
-
-}}%%
-
-flowchart TD
-
-    linkStyle default stroke:#2563eb,stroke-width:4px;
-
-    Start((Start)) --> G0
-
-    subgraph GRUB["Boot Entry"]
-
-        direction TB
-
-        G0["Power on / reset platform"] --> G1["GRUB menu"]
-
-        G1 --> G2{"Selected boot option?"}
-
-    end
-
-    G2 -->|"SystemReady band ACS<br/>Automation"| U0
-
-    G2 -->|"Linux Boot"| LB0
-
-    G2 -->|"BBSR Compliance<br/>Automation"| BBSR0
-
-    G2 -->|"Execution Environment"| EE0
-
-    subgraph UEFI_PHASE["UEFI Automation Phase"]
-
-        direction TB
-
-        U0["Run EFI/BOOT/startup.nsh"] --> U1["Load ACS configuration"]
-
-        U1 --> U2["Run SCT / BBR"]
-
-        U2 --> U3["Run SCRT if applicable"]
-
-        U3 --> U4["Run BSA UEFI"]
-
-        U4 --> U5{"SBSA enabled?"}
-
-        U5 -->|"yes"| U6["Run SBSA UEFI"]
-
-        U5 -->|"no"| U7["Skip SBSA UEFI"]
-
-        U6 --> U8["Collect UEFI logs"]
-
-        U7 --> U8
-
-    end
-
-    U8 --> REBOOT0
-
-    subgraph REBOOT_TO_LINUX["UEFI to Linux Transition"]
-
-        direction TB
-
-        REBOOT0["Reset / reboot into Linux path"] --> BOOT0["Boot ACS Linux kernel"]
-
-        BOOT0 --> BOOT1["Load Buildroot ramdisk"]
-
-        BOOT1 --> BOOT2["Start Linux init automation"]
-
-    end
-
-    LB0["Direct Linux Boot path"] --> BOOT0
-
-    subgraph LINUX_PHASE["Linux Automation Phase"]
-
-        direction TB
-
-        BOOT2 --> L0["Run init.sh"]
-
-        L0 --> L1["Mount ACS result partition"]
-
-        L1 --> L2["Read acs_run_config.ini"]
-
-        L2 --> L3["Run Linux debug dump"]
-
-        L3 --> L4["Run FWTS"]
-
-        L4 --> L5{"SBMR enabled?"}
-
-        L5 -->|"yes"| L6["Run SBMR in-band tests"]
-
-        L5 -->|"no"| L7["Skip SBMR"]
-
-        L6 --> L8["Run BSA Linux"]
-
-        L7 --> L8
-
-        L8 --> L9{"SBSA enabled?"}
-
-        L9 -->|"yes"| L10["Run SBSA Linux"]
-
-        L9 -->|"no"| L11["Skip SBSA Linux"]
-
-        L10 --> R0
-
-        L11 --> R0
-
-    end
-
-    subgraph RESULT_PHASE["Result Processing Phase"]
-
-        direction TB
-
-        R0["Collect UEFI and Linux logs"] --> R1["Parse SCT results"]
-
-        R1 --> R2["Run ACS log parser"]
-
-        R2 --> R3{"Waivers configured?"}
-
-        R3 -->|"yes"| R4["Apply waivers"]
-
-        R3 -->|"no"| R5["Skip waiver processing"]
-
-        R4 --> R6["Generate ACS summary"]
-
-        R5 --> R6
-
-        R6 --> R7["acs_results/acs_summary"]
-
-        R7 --> End((End))
-
-    end
-
-    subgraph BBSR_PHASE["BBSR Automation Path"]
-
-        direction TB
-
-        BBSR0["Run bbsr_startup.nsh"] --> B0{"Secure Boot enabled?"}
-
-        B0 -->|"yes"| B3["Run BBSR UEFI tests"]
-
-        B0 -->|"no"| B1["Provision Secure Boot keys"]
-
-        B1 --> B2["Reset / reboot required"]
-
-        B2 --> G1
-
-        B3 --> B4["Boot Secure Linux path"]
-
-        B4 --> B5["Run secure_init.sh"]
-
-        B5 --> B6["Collect BBSR logs"]
-
-        B6 --> R1
-
-    end
-
-    subgraph MANUAL_PATH["Manual Execution Path"]
-
-        direction TB
-
-        EE0["Enter manual execution environment"] --> EE1["User runs selected tests manually"]
-
-        EE1 --> End
-
-    end
-
-    classDef startEnd fill:#ffffff,stroke:#0f172a,stroke-width:3px,color:#0f172a;
-
-    classDef grub fill:#dbeafe,stroke:#1d4ed8,stroke-width:3px,color:#0f172a;
-
-    classDef decision fill:#ffffff,stroke:#2563eb,stroke-width:3px,color:#0f172a;
-
-    classDef uefi fill:#ffedd5,stroke:#ea580c,stroke-width:3px,color:#0f172a;
-
-    classDef reboot fill:#fee2e2,stroke:#dc2626,stroke-width:3px,color:#0f172a;
-
-    classDef linux fill:#dcfce7,stroke:#16a34a,stroke-width:3px,color:#0f172a;
-
-    classDef result fill:#ede9fe,stroke:#7c3aed,stroke-width:3px,color:#0f172a;
-
-    classDef manual fill:#f3f4f6,stroke:#64748b,stroke-width:3px,color:#0f172a;
-
-    class Start,End startEnd;
-
-    class G0,G1,G2 grub;
-
-    class U0,U1,U2,U3,U4,U6,U7,U8,BBSR0,B1,B3,B4,B5,B6 uefi;
-
-    class REBOOT0,B2 reboot;
-
-    class BOOT0,BOOT1,BOOT2,LB0,L0,L1,L2,L3,L4,L6,L7,L8,L10,L11 linux;
-
-    class R0,R1,R2,R4,R5,R6,R7 result;
-
-    class U5,L5,L9,R3,B0 decision;
-
-    class EE0,EE1 manual;
-
-```
----
-
-### SR Runtime Summary
+> **Reboot handling:** Some test suites intentionally reset the platform after saving results. After reset, the platform returns to **GRUB** and resumes from the next pending stage. Completed suites are skipped using result logs or state.
+
+#### Legend
+
+| Marker | Interpretation |
+|---|---|
+| 🟦 | GRUB / boot entry |
+| 🟧 | UEFI phase |
+| 🟩 | Linux phase |
+| 🟥 | Reset / reboot |
+| 🟪 | Result processing |
+| 🟨 | BBSR flow |
+| ⬜ | Manual execution |
 
 ```text
-GRUB
-  └── SystemReady band ACS (Automation)
-        └── UEFI startup.nsh
-              ├── SCT / BBR / SCRT
-              ├── BSA UEFI
-              ├── SBSA UEFI, if enabled
-              └── reboot / transition to Linux
-                    └── Linux init.sh
-                          ├── FWTS
-                          ├── SBMR, if enabled
-                          ├── BSA Linux
-                          ├── SBSA Linux, if enabled
-                          └── ACS summary generation
+🟦 𝗚𝗥𝗨𝗕
+│
+├── 🟩 𝗟𝗶𝗻𝘂𝘅 𝗕𝗼𝗼𝘁
+│   ├── Executed when ACS Linux is booted directly from GRUB or UEFI automation completes
+│       └── 🟩 𝗟𝗶𝗻𝘂𝘅 𝗶𝗻𝗶𝘁.𝘀𝗵
+│           ├── Parse ACS run configuration
+│           ├── Linux debug dump
+│           ├── Device driver information
+│           ├── FWTS
+│           ├── SBMR in-band, if enabled in config
+│           ├── BSA Linux
+│           ├── SBSA Linux, if enabled in config
+│           └── 🟪 𝗥𝗲𝘀𝘂𝗹𝘁 𝗽𝗿𝗼𝗰𝗲𝘀𝘀𝗶𝗻𝗴
+│               ├── EDK2 test parser
+│               ├── SystemReady post scripts
+│               ├── ACS log parser
+│               ├── Apply waivers, if configured
+│               └── Generate acs_results/acs_summary
+│
+├── 🟧 𝗦𝘆𝘀𝘁𝗲𝗺𝗥𝗲𝗮𝗱𝘆 𝗯𝗮𝗻𝗱 𝗔𝗖𝗦 (𝗔𝘂𝘁𝗼𝗺𝗮𝘁𝗶𝗼𝗻)
+│   └── 🟧 𝗨𝗘𝗙𝗜 𝘀𝘁𝗮𝗿𝘁𝘂𝗽.𝗻𝘀𝗵
+│       ├── Parser.efi / ACS configuration
+│       │   └── User input to enable or disable selected test suites
+│       ├── SCT / BBR / SCRT
+│       ├── Capsule information dump
+│       ├── UEFI debug dump
+│       │
+│       ├── 🟧 𝗕𝗦𝗔 𝗨𝗘𝗙𝗜
+│       │   ├── Run Bsa.efi
+│       │   ├── Save BSA result log
+│       │   └── 🟥 𝗥𝗘𝗦𝗘𝗧
+│       │       └── Resume from GRUB and continue automation
+│       │
+│       ├── 🟧 𝗦𝗕𝗦𝗔 𝗨𝗘𝗙𝗜, If enabled in config
+│       │   ├── Run Sbsa.efi
+│       │   ├── Save SBSA result log
+│       │   └── 🟥 𝗥𝗘𝗦𝗘𝗧
+│       │       └── Resume from GRUB and continue to Linux phase
+│       │
+│       └── 🟩 𝗕𝗼𝗼𝘁 𝗟𝗶𝗻𝘂𝘅
+│           └── Continue with Linux Boot (see Linux Boot flow above)
+│
+├── 🟨 𝗕𝗕𝗦𝗥 𝗖𝗼𝗺𝗽𝗹𝗶𝗮𝗻𝗰𝗲 (𝗔𝘂𝘁𝗼𝗺𝗮𝘁𝗶𝗼𝗻)
+│   └── bbsr_startup.nsh
+│       ├── Check Secure Boot state
+│       ├── Provision Secure Boot keys
+│       │   └── If not done automatically, provision keys manually
+│       │       └── 🟥 𝗥𝗘𝗦𝗘𝗧
+│       │           └── Resume BBSR flow from GRUB
+│       ├── Run BBSR UEFI / SCT flow
+│       ├── Secure Linux boot
+│       └── 🟩 Linux secure_init.sh
+│           ├── Run Linux-side BBSR checks
+│           ├── Collect BBSR logs
+│           └── 🟪 Generate BBSR / ACS summary
+│
+├── ⬜ 𝗨𝗘𝗙𝗜 𝗘𝘅𝗲𝗰𝘂𝘁𝗶𝗼𝗻 𝗘𝗻𝘃𝗶𝗿𝗼𝗻𝗺𝗲𝗻𝘁
+│   └── Enter UEFI shell
+│       └── User runs selected UEFI-side tests manually
+│
+└── ⬜ 𝗟𝗶𝗻𝘂𝘅 𝗘𝘅𝗲𝗰𝘂𝘁𝗶𝗼𝗻 𝗘𝗻𝘃𝗶𝗿𝗼𝗻𝗺𝗲𝗻𝘁
+    └── Boot ACS Linux shell
+        └── User runs selected Linux-side tests manually
 ```
 ---
-
-
 ## GRUB Boot Menu Options
 
 | Boot Option | Purpose |
@@ -356,7 +197,6 @@ GRUB
 | `UEFI Execution Environment` | Provides manual UEFI shell execution environment |
 | `Linux Execution Environment` | Provides manual Linux-side execution environment |
 | `Linux Boot with SetVirtualAddressMap enabled` | Debug or special Linux boot option |
-
 ---
 
 ## Configuration Files
@@ -368,17 +208,14 @@ GRUB
 | `system_config.txt` | Contains platform details used in the final ACS report |
 
 ---
-
 ## Result Collection
 
 ACS logs and summaries are stored under:
-
 ```text
 acs_results/
 ```
 
 Final parsed reports are generated under:
-
 ```text
 acs_results/acs_summary/
 ```
