@@ -27,7 +27,7 @@ The automation flow covers:
 | Secure Boot compliance | BBSR |
 | Devicetree validation | DT validation tools, DT parser, DT kernel selftests |
 | Linux device visibility | Device driver information script |
-| Network validation | UEFI ping test, HTTPS/network boot, Ethernet/network checks |
+| Network validation | UEFI ping test, HTTPS/network boot, Ethernet checks |
 | Block device validation | Block device read/write checks |
 | Capsule update | Capsule update scripts and UEFI apps |
 | Result reporting | EDK2 test parser, ACS log parser, waiver flow |
