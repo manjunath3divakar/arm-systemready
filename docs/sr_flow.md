@@ -169,8 +169,6 @@ flowchart TD
 │       ├── Check Secure Boot state
 │       ├── Provision Secure Boot keys
 │       │   └── If not done automatically, provision keys manually
-│       │       └── 🟥 𝗥𝗘𝗦𝗘𝗧
-│       │           └── Resume BBSR flow from GRUB
 │       ├── Run BBSR UEFI / SCT flow
 │       ├── Secure Linux boot
 │       └── 🟩 Linux secure_init.sh
