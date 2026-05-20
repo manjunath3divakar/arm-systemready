@@ -20,10 +20,9 @@ The automation flow covers:
 
 | Validation Area | Tools / Test Suites |
 |---|---|
-| UEFI firmware compliance | SCT, SCRT, BBR |
+| Firmware compliance | SCT, SCRT, FWTS |
 | Base system architecture | BSA |
 | Server architecture | SBSA |
-| Firmware behavior | FWTS |
 | Secure Boot compliance | BBSR |
 | Manageability checks | SBMR |
 | Linux-side validation | Linux scripts and test tools |
@@ -105,84 +104,201 @@ flowchart TD
     class M output;
 ```
 ---
-### SR Runtime Automation Flow
+## SR Runtime Flowcharts
+- These diagrams show the high-level runtime automation flow.
+- **Reboot handling:** Some test suites intentionally reset the platform after saving results. After reset, the platform returns to **GRUB** and resumes from the next pending stage. Completed suites are skipped using result logs or state.
+---
 
-> **Reboot handling:** Some test suites intentionally reset the platform after saving results. After reset, the platform returns to **GRUB** and resumes from the next pending stage. Completed suites are skipped using result logs or state.
+### 1. Runtime Entry Flow
 
-#### Legend
+> By default, **SystemReady band ACS (Automation)** is selected and the full automation flow is executed.
 
-| Marker | Interpretation |
-|---|---|
-| 🟦 | GRUB / boot entry |
-| 🟧 | UEFI phase |
-| 🟩 | Linux phase |
-| 🟥 | Reset / reboot |
-| 🟪 | Result processing |
-| 🟨 | BBSR flow |
-| ⬜ | Manual execution |
+```mermaid
+%%{init: {
+  "theme": "base",
+  "flowchart": {
+    "curve": "linear",
+    "nodeSpacing": 35,
+    "rankSpacing": 45
+  },
+  "themeVariables": {
+    "fontFamily": "Arial",
+    "fontSize": "14px",
+    "primaryBorderColor": "#0f172a",
+    "lineColor": "#2563eb",
+    "tertiaryColor": "#ffffff"
+  }
+}}%%
 
-```text
-🟦 𝗚𝗥𝗨𝗕
-│
-├── 🟩 𝗟𝗶𝗻𝘂𝘅 𝗕𝗼𝗼𝘁
-│   ├── Executed when ACS Linux is booted directly from GRUB or UEFI automation completes
-│       └── 🟩 𝗟𝗶𝗻𝘂𝘅 𝗶𝗻𝗶𝘁.𝘀𝗵
-│           ├── Parse ACS run configuration
-│           ├── Linux debug dump
-│           ├── Device driver information
-│           ├── FWTS
-│           ├── SBMR in-band, if enabled in config
-│           ├── BSA Linux
-│           ├── SBSA Linux, if enabled in config
-│           └── 🟪 𝗥𝗲𝘀𝘂𝗹𝘁 𝗽𝗿𝗼𝗰𝗲𝘀𝘀𝗶𝗻𝗴
-│               ├── EDK2 test parser
-│               ├── SystemReady post scripts
-│               ├── ACS log parser
-│               ├── Apply waivers, if configured
-│               └── Generate acs_results/acs_summary
-│
-├── 🟧 𝗦𝘆𝘀𝘁𝗲𝗺𝗥𝗲𝗮𝗱𝘆 𝗯𝗮𝗻𝗱 𝗔𝗖𝗦 (𝗔𝘂𝘁𝗼𝗺𝗮𝘁𝗶𝗼𝗻)
-│   └── 🟧 𝗨𝗘𝗙𝗜 𝘀𝘁𝗮𝗿𝘁𝘂𝗽.𝗻𝘀𝗵
-│       ├── Parser.efi / ACS configuration
-│       │   └── User input to enable or disable selected test suites
-│       ├── SCT / BBR / SCRT
-│       ├── Capsule information dump
-│       ├── UEFI debug dump
-│       │
-│       ├── 🟧 𝗕𝗦𝗔 𝗨𝗘𝗙𝗜
-│       │   ├── Run Bsa.efi
-│       │   ├── Save BSA result log
-│       │   └── 🟥 𝗥𝗘𝗦𝗘𝗧
-│       │       └── Resume from GRUB and continue automation
-│       │
-│       ├── 🟧 𝗦𝗕𝗦𝗔 𝗨𝗘𝗙𝗜, If enabled in config
-│       │   ├── Run Sbsa.efi
-│       │   ├── Save SBSA result log
-│       │   └── 🟥 𝗥𝗘𝗦𝗘𝗧
-│       │       └── Resume from GRUB and continue to Linux phase
-│       │
-│       └── 🟩 𝗕𝗼𝗼𝘁 𝗟𝗶𝗻𝘂𝘅
-│           └── Continue with Linux Boot (see Linux Boot flow above)
-│
-├── 🟨 𝗕𝗕𝗦𝗥 𝗖𝗼𝗺𝗽𝗹𝗶𝗮𝗻𝗰𝗲 (𝗔𝘂𝘁𝗼𝗺𝗮𝘁𝗶𝗼𝗻)
-│   └── bbsr_startup.nsh
-│       ├── Check Secure Boot state
-│       ├── Provision Secure Boot keys
-│       │   └── If not done automatically, provision keys manually
-│       ├── Run BBSR UEFI / SCT flow
-│       ├── Secure Linux boot
-│       └── 🟩 Linux secure_init.sh
-│           ├── Run Linux-side BBSR checks
-│           ├── Collect BBSR logs
-│           └── 🟪 Generate BBSR / ACS summary
-│
-├── ⬜ 𝗨𝗘𝗙𝗜 𝗘𝘅𝗲𝗰𝘂𝘁𝗶𝗼𝗻 𝗘𝗻𝘃𝗶𝗿𝗼𝗻𝗺𝗲𝗻𝘁
-│   └── Enter UEFI shell
-│       └── User runs selected UEFI-side tests manually
-│
-└── ⬜ 𝗟𝗶𝗻𝘂𝘅 𝗘𝘅𝗲𝗰𝘂𝘁𝗶𝗼𝗻 𝗘𝗻𝘃𝗶𝗿𝗼𝗻𝗺𝗲𝗻𝘁
-    └── Boot ACS Linux shell
-        └── User runs selected Linux-side tests manually
+flowchart LR
+
+    linkStyle default stroke:#2563eb,stroke-width:4px;
+
+    A["GRUB<br/>Menu"] --> B{"Boot<br/>option"}
+
+    B --> C["SystemReady<br/>band ACS<br/><b>Automation</b>"]
+    B --> D["Linux<br/>Boot"]
+    B --> E["BBSR<br/>Compliance<br/><b>Automation</b>"]
+
+    classDef grub fill:#dbeafe,stroke:#1d4ed8,stroke-width:3px,color:#0f172a;
+    classDef decision fill:#ffffff,stroke:#2563eb,stroke-width:3px,color:#0f172a;
+    classDef linux fill:#dcfce7,stroke:#16a34a,stroke-width:3px,color:#0f172a;
+    classDef uefi fill:#ffedd5,stroke:#ea580c,stroke-width:3px,color:#0f172a;
+    classDef bbsr fill:#fef3c7,stroke:#d97706,stroke-width:3px,color:#0f172a;
+
+    class A grub;
+    class B decision;
+    class C uefi;
+    class D linux;
+    class E bbsr;
+```
+
+---
+
+### 2. UEFI Automation Flow
+
+> This flow is executed when **SystemReady band ACS (Automation)** is selected from GRUB.
+
+```mermaid
+%%{init: {
+  "theme": "base",
+  "flowchart": {
+    "curve": "linear",
+    "nodeSpacing": 25,
+    "rankSpacing": 35
+  },
+  "themeVariables": {
+    "fontFamily": "Arial",
+    "fontSize": "14px",
+    "primaryBorderColor": "#0f172a",
+    "lineColor": "#2563eb",
+    "tertiaryColor": "#ffffff"
+  }
+}}%%
+
+flowchart LR
+
+    linkStyle default stroke:#2563eb,stroke-width:4px;
+
+    A["• SCT<br/>• SCRT"]
+    A --> B["• Capsule<br/>  info dump<br/>• UEFI<br/>  debug dump"]
+
+    B --> C["BSA<br/>UEFI"]
+    C --> R1["Reset"]
+
+    R1 -->|"SBSA enabled"| D["SBSA<br/>UEFI"]
+    R1 -->|"SBSA not enabled"| E["Boot<br/>Linux"]
+
+    D --> R2["Reset"]
+    R2 --> E
+
+    classDef uefi fill:#ffedd5,stroke:#ea580c,stroke-width:3px,color:#0f172a;
+    classDef reboot fill:#fee2e2,stroke:#dc2626,stroke-width:3px,color:#0f172a;
+    classDef linux fill:#dcfce7,stroke:#16a34a,stroke-width:3px,color:#0f172a;
+
+    class A,B,C,D uefi;
+    class R1,R2 reboot;
+    class E linux;
+```
+
+---
+
+### 3. Linux Automation Flow
+
+> This flow is executed either after **SystemReady band ACS (Automation)** completes the UEFI phase, or directly when **Linux Boot** is selected from GRUB.
+
+```mermaid
+%%{init: {
+  "theme": "base",
+  "flowchart": {
+    "curve": "linear",
+    "nodeSpacing": 30,
+    "rankSpacing": 40
+  },
+  "themeVariables": {
+    "fontFamily": "Arial",
+    "fontSize": "14px",
+    "primaryBorderColor": "#0f172a",
+    "lineColor": "#2563eb",
+    "tertiaryColor": "#ffffff"
+  }
+}}%%
+
+flowchart LR
+
+    linkStyle default stroke:#2563eb,stroke-width:4px;
+
+    A["• Linux<br/>  debug dump<br/>• Device driver<br/>  info"]
+    A --> B["FWTS"]
+
+    B --> C["BSA<br/>Linux"]
+
+    B -->|"SBMR enabled"| D["SBMR<br/>in-band"]
+    D --> C
+
+    C --> E["• EDK2<br/>  test parser<br/>• Post<br/>  scripts"]
+
+    C -->|"SBSA enabled"| F["SBSA<br/>Linux"]
+    F --> E
+
+    E --> G["ACS log parser<br/><br/>(apply waivers<br/>if configured)"]
+    G --> H["Print<br/>ACS summary"]
+
+    classDef linux fill:#dcfce7,stroke:#16a34a,stroke-width:3px,color:#0f172a;
+    classDef result fill:#ede9fe,stroke:#7c3aed,stroke-width:3px,color:#0f172a;
+
+    class A,B,C,D,F linux;
+    class E,G,H result;
+```
+
+---
+
+### 4. BBSR Automation Flow
+
+> If Secure Boot keys are not provisioned automatically, provision the keys manually and then run the BBSR automation again.
+
+```mermaid
+%%{init: {
+  "theme": "base",
+  "flowchart": {
+    "curve": "linear",
+    "nodeSpacing": 30,
+    "rankSpacing": 40
+  },
+  "themeVariables": {
+    "fontFamily": "Arial",
+    "fontSize": "14px",
+    "primaryBorderColor": "#0f172a",
+    "lineColor": "#2563eb",
+    "tertiaryColor": "#ffffff"
+  }
+}}%%
+
+flowchart LR
+
+    linkStyle default stroke:#2563eb,stroke-width:4px;
+
+    A["BBSR<br/>Compliance<br/><b>Automation</b>"]
+    A --> B{"Secure Boot<br/>enabled?"}
+
+    B -->|"yes"| D["BBSR<br/>UEFI / SCT<br/>flow"]
+    B -->|"no"| C["Provision<br/>Secure Boot<br/>keys"]
+
+    C --> D
+
+    D --> E["Secure<br/>Linux boot"]
+    E --> F["Collect<br/>BBSR logs<br/><br/>(FWTS / TPM)"]
+    F --> G["ACS log parser<br/><br/>BBSR summary"]
+
+    classDef bbsr fill:#fef3c7,stroke:#d97706,stroke-width:3px,color:#0f172a;
+    classDef decision fill:#ffffff,stroke:#2563eb,stroke-width:3px,color:#0f172a;
+    classDef linux fill:#dcfce7,stroke:#16a34a,stroke-width:3px,color:#0f172a;
+    classDef result fill:#ede9fe,stroke:#7c3aed,stroke-width:3px,color:#0f172a;
+
+    class A,C,D bbsr;
+    class B decision;
+    class E,F linux;
+    class G result;
 ```
 ---
 ## GRUB Boot Menu Options
