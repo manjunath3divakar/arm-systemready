@@ -50,7 +50,7 @@ sudo ./linux_init.sh --mode os
 
 ## Generated Log Directory
 
-The OS logs are generated under the original user’s home directory:
+The OS logs are generated under the user’s home directory:
 ```text
 $HOME/systemready-band-compliance-logs/
 ```
@@ -131,7 +131,7 @@ Directory structure:
 ```text
 acs_results_template/
 └── os-logs/
-    └── linux-redhat/
+    └── linux-<os-name>/
         └── systemready-band-compliance-logs/
             ├── dmesg.txt
             ├── lspci.txt
