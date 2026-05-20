@@ -23,10 +23,10 @@ system_config.txt
 ```text
 linux_init.sh
 ├── detects OS mode
-├── installs required tools if possible
+├── installs required tools
 ├── calls linux_dump.sh
-├── runs read_write_check_blk_devices.py
-├── runs ethtool-test.py
+├── runs read_write_check_blk_devices.py to validate block devices using read checks and optional write checks.
+├── runs ethtool-test.py to validate Ethernet interfaces using link, ethtool, IP, ping, wget, and curl checks.
 ├── creates systemready-band-compliance-logs.tar.gz
 └── prints where to copy the generated OS logs for ACS parser use
 
@@ -38,14 +38,13 @@ linux_dump.sh
 ```
 
 ## How to Run
-
-From the directory containing the scripts:
-Run the script with root privileges.
+From the directory containing the scripts, run the script with root privileges.
 ```sh
 chmod +x linux_init.sh
+```
+```sh
 sudo ./linux_init.sh --mode os
 ```
-If the script does not detect an ACS environment, it automatically runs in OS mode.
 
 ## Generated Log Directory
 
