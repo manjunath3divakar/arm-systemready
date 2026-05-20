@@ -61,7 +61,6 @@ jobs:
           cp common/linux_scripts/ethtool-test.py systemready_os_diagnostics/
           cp common/linux_scripts/read_write_check_blk_devices.py systemready_os_diagnostics/
           cp common/config/system_config.txt systemready_os_diagnostics/
-          cp common/linux_scripts/README_OS_DIAGNOSTICS.md systemready_os_diagnostics/
           zip -r systemready_os_diagnostics.zip systemready_os_diagnostics
     
       - name: Upload SystemReady image
