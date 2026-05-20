@@ -10,31 +10,33 @@ The OS run collects debug logs from the installed operating system and runs addi
 
 The OS run uses the following scripts:
 
-```text
-linux_init.sh
-linux_dump.sh
-ethtool-test.py
-read_write_check_blk_devices.py
-system_config.txt
-```
+| File | Purpose |
+|------|---------|
+| [`linux_init.sh`](../common/linux_scripts/linux_init.sh) | Initializes the OS run and triggers ACS or OS log collection flow |
+| [`linux_dump.sh`](../common/linux_scripts/linux_dump.sh) | Collects Linux system dump logs |
+| [`ethtool-test.py`](../common/linux_scripts/ethtool-test.py) | Perfoms Ethernet interface checks |
+| [`read_write_check_blk_devices.py`](../common/linux_scripts/read_write_check_blk_devices.py) | Performs read/write checks on block devices. |
+| [`system_config.txt`](../common/config/system_config.txt) | System configuration input used by the scripts. | 
+
+> **Note**: Please download the latest OS script files from the **[SystemReady-ACS Daily artifacts](https://github.com/ARM-software/arm-systemready/actions/workflows/systemready_daily.yml)**.
 
 ### Script Flow
 
 ```text
 linux_init.sh
-├── detects OS mode
-├── installs required tools
-├── calls linux_dump.sh
-├── runs read_write_check_blk_devices.py to validate block devices using read checks and optional write checks.
-├── runs ethtool-test.py to validate Ethernet interfaces using link, ethtool, IP, ping, wget, and curl checks.
-├── creates systemready-band-compliance-logs.tar.gz
-└── prints where to copy the generated OS logs for ACS parser use
+    ├── detects OS mode
+    ├── installs required tools
+    ├── calls linux_dump.sh
+    ├── runs read_write_check_blk_devices.py to validate block devices using read checks and optional write checks.
+    ├── runs ethtool-test.py to validate Ethernet interfaces using link, ethtool, IP, ping, wget, and curl checks.
+    ├── creates systemready-band-compliance-logs.tar.gz
+    └── prints where to copy the generated OS logs for ACS parser use
 
 linux_dump.sh
-├── collects Linux debug dump logs
-├── captures firmware, ACPI, UEFI, RTC, PCI, CPU, memory, USB, and block-device information
-├── performs system time and hardware clock set checks
-└── restores OS time synchronization using chronyd or systemd-timesyncd when available
+    ├── collects Linux debug dump logs
+    ├── captures firmware, ACPI, UEFI, RTC, PCI, CPU, memory, USB, and block-device information
+    ├── performs system time and hardware clock set checks
+    └── restores OS time synchronization using chronyd or systemd-timesyncd when available
 ```
 
 ## How to Run
@@ -124,7 +126,7 @@ Expected destination:
 acs_results_template/os-logs/<linux-os-name>/systemready-band-compliance-logs/
 ```
 
-Final structure:
+Directory structure:
 
 ```text
 acs_results_template/
