@@ -140,3 +140,5 @@ acs_results_template/
             ├── read_write_check_blk_devices.log
             └── other OS logs
 ```
+--------------
+*Copyright (c) 2026, Arm Limited and Contributors. All rights reserved.*
