@@ -141,7 +141,7 @@ flowchart LR
     B --> D["Linux<br/>Boot"]
     B --> E["BBSR<br/>Compliance<br/><b>Automation</b>"]
 
-    click C "https://github.com/manjunath3divakar/arm-systemready/edit/flow_docs/docs/systemready_band_flow.md#2-systemready-band-acs-automation-flow" "Go to SystemReady band ACS Automation Flow"
+    click C "https://github.com/manjunath3divakar/arm-systemready/blob/flow_docs/docs/systemready_band_flow.md#2-systemready-band-acs-automation-flow" "Go to SystemReady band ACS Automation Flow"
     click D "https://github.com/manjunath3divakar/arm-systemready/edit/flow_docs/docs/systemready_band_flow.md#3-linux-automation-flow" "Go to Linux Automation Flow"
     click E "https://github.com/manjunath3divakar/arm-systemready/edit/flow_docs/docs/systemready_band_flow.md#4-bbsr-automation-flow" "Go to BBSR Automation Flow"
 
