@@ -289,25 +289,22 @@ flowchart LR
     A --> R1["Reset"]
 
     R1 --> B["UEFI<br/>capsule update<br/>flow"]
-    B --> C["Run capsule<br/>update validation"]
-    C --> D["Store capsule<br/>result state"]
+    B --> R2["Reset<br/><br/>(if firmware<br/>update applies)"]
+    B --> C["Continue<br/>boot flow"]
 
-    D --> R2["Reset<br/><br/>(if firmware<br/>update applies)"]
-    D --> E["Continue<br/>boot flow"]
-
-    R2 --> E
-    E --> F["Boot back<br/>to Linux"]
-    F --> G["Parse capsule<br/>update result"]
+    R2 --> C
+    C --> D["Boot back<br/>to Linux"]
+    D --> E["Parse capsule<br/>update result"]
 
     classDef linux fill:#dcfce7,stroke:#16a34a,stroke-width:3px,color:#0f172a;
     classDef uefi fill:#ffedd5,stroke:#ea580c,stroke-width:3px,color:#0f172a;
     classDef reboot fill:#fee2e2,stroke:#dc2626,stroke-width:3px,color:#0f172a;
     classDef result fill:#ede9fe,stroke:#7c3aed,stroke-width:3px,color:#0f172a;
 
-    class A,F linux;
-    class B,C,D,E uefi;
+    class A,D linux;
+    class B,C uefi;
     class R1,R2 reboot;
-    class G result;
+    class E result;
 ```
 
 #### Network Boot
