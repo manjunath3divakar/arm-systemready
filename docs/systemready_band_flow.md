@@ -111,7 +111,8 @@ flowchart TD
 
 ### 1. Runtime Entry Flow
 
-> By default, **SystemReady band ACS (Automation)** is selected and the full automation flow is executed.
+> By default, **SystemReady band ACS (Automation)** is selected and the full automation flow is executed.  
+> Click a boot option box to jump to the corresponding flow section in GitHub.
 
 ```mermaid
 %%{init: {
@@ -140,6 +141,10 @@ flowchart LR
     B --> D["Linux<br/>Boot"]
     B --> E["BBSR<br/>Compliance<br/><b>Automation</b>"]
 
+    click C "https://github.com/<ORG>/<REPO>/blob/<BRANCH>/<PATH_TO_README>.md#2-systemready-band-acs-automation-flow" "Go to SystemReady band ACS Automation Flow"
+    click D "https://github.com/<ORG>/<REPO>/blob/<BRANCH>/<PATH_TO_README>.md#3-linux-automation-flow" "Go to Linux Automation Flow"
+    click E "https://github.com/<ORG>/<REPO>/blob/<BRANCH>/<PATH_TO_README>.md#4-bbsr-automation-flow" "Go to BBSR Automation Flow"
+
     classDef grub fill:#dbeafe,stroke:#1d4ed8,stroke-width:3px,color:#0f172a;
     classDef decision fill:#ffffff,stroke:#2563eb,stroke-width:3px,color:#0f172a;
     classDef linux fill:#dcfce7,stroke:#16a34a,stroke-width:3px,color:#0f172a;
@@ -155,7 +160,7 @@ flowchart LR
 
 ---
 
-### 2. UEFI Automation Flow
+### 2. SystemReady band ACS Flow
 
 > This flow is executed when **SystemReady band ACS (Automation)** is selected from GRUB.
 
@@ -199,6 +204,49 @@ flowchart LR
     class A,B,C,D uefi;
     class R1,R2 reboot;
     class E linux;
+```
+```mermaid
+%%{init: {
+  "theme": "base",
+  "flowchart": {
+    "curve": "linear",
+    "nodeSpacing": 30,
+    "rankSpacing": 40
+  },
+  "themeVariables": {
+    "fontFamily": "Arial",
+    "fontSize": "14px",
+    "primaryBorderColor": "#0f172a",
+    "lineColor": "#2563eb",
+    "tertiaryColor": "#ffffff"
+  }
+}}%%
+
+flowchart LR
+
+    linkStyle default stroke:#2563eb,stroke-width:4px;
+
+    A["• Linux<br/>  debug dump<br/>• Device driver<br/>  info"]
+    A --> B["FWTS"]
+
+    B --> C["BSA<br/>Linux"]
+
+    B -->|"SBMR enabled"| D["SBMR<br/>in-band"]
+    D --> C
+
+    C --> E["• EDK2<br/>  test parser<br/>• Post<br/>  scripts"]
+
+    C -->|"SBSA enabled"| F["SBSA<br/>Linux"]
+    F --> E
+
+    E --> G["ACS log parser<br/><br/>(apply waivers<br/>if configured)"]
+    G --> H["Print<br/>ACS summary"]
+
+    classDef linux fill:#dcfce7,stroke:#16a34a,stroke-width:3px,color:#0f172a;
+    classDef result fill:#ede9fe,stroke:#7c3aed,stroke-width:3px,color:#0f172a;
+
+    class A,B,C,D,F linux;
+    class E,G,H result;
 ```
 
 ---
