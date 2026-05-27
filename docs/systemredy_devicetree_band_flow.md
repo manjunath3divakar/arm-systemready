@@ -20,10 +20,9 @@ The automation flow covers:
 
 | Validation Area | Tools / Test Suites |
 |---|---|
-| UEFI firmware compliance | SCT, SCRT, BBR |
+| Firmware compliance | SCT, FWTS |
 | Base system architecture | BSA |
 | Platform firmware/device interface | PFDI |
-| Firmware behavior | FWTS |
 | Secure Boot compliance | BBSR |
 | Devicetree validation | DT validation tools, DT parser, DT kernel selftests |
 | Linux device visibility | Device driver information script |
@@ -445,10 +444,10 @@ flowchart LR
 
 | File | Description |
 |---|---|
-| `acs_config.txt` | Contains ACS and specification version information |
-| `system_config.txt` | Contains platform details used in the final ACS report |
-| `acs_config_dt.txt` | DT-specific ACS configuration template |
-| `system_config_dt.txt` | DT-specific system configuration template |
+|[`acs_config.txt`](../common/config/acs_config.txt) | Contains ACS and specification version information |
+|[`system_config.txt`](../common/config/system_config.txt) | Contains platform details used in the final ACS report |
+|[`acs_config_dt.txt`](../common/config/acs_config_dt.txt) | DT-specific ACS configuration template |
+|[`system_config_dt.txt`](../common/config/system_config_dt.txt)| DT-specific system configuration template |
 
 Important DT-related configuration fields:
 
@@ -464,16 +463,6 @@ Important DT-related configuration fields:
 DT ACS logs and summaries are stored under:
 ```text
 acs_results_template/acs_results/
-```
-
-Firmware and capsule-related logs are stored under:
-```text
-acs_results_template/fw/
-```
-
-Manual OS compliance logs are stored under:
-```text
-acs_results_template/os-logs/
 ```
 
 Final parsed reports are generated under:
