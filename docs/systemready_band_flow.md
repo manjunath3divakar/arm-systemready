@@ -49,23 +49,6 @@ Commands executed from **arm-systemready/SystemReady-band/**:
 ./build-scripts/build-systemready-band-live-image.sh
 ```
 
-### SR Build Automation Flow
-
-Commands executed from **arm-systemready/SystemReady-band/**:
-
-```text
-./build-scripts/get_source.sh
-./build-scripts/build-systemready-band-live-image.sh
-```
-### SR Build Automation Flow
-
-Commands executed from **arm-systemready/SystemReady-band/**:
-
-```text
-./build-scripts/get_source.sh
-./build-scripts/build-systemready-band-live-image.sh
-```
-
 ```mermaid
 %%{init: {
   "theme": "base",
