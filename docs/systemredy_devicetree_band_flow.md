@@ -147,9 +147,9 @@ flowchart LR
     B --> D["Linux<br/>Boot"]
     B --> E["BBSR<br/>Compliance<br/><b>Automation</b>"]
 
-    click C "https://github.com/manjunath3divakar/arm-systemready/blob/flow_docs/docs/systemready_devicetree_band_flow.md#2-bbrbsa-acs-automation-flow" "Go to bbr/bsa ACS Automation Flow"
-    click D "https://github.com/manjunath3divakar/arm-systemready/blob/flow_docs/docs/systemready_devicetree_band_flow.md#3-linux-automation-flow" "Go to Linux Automation Flow"
-    click E "https://github.com/manjunath3divakar/arm-systemready/blob/flow_docs/docs/systemready_devicetree_band_flow.md#4-bbsr-automation-flow" "Go to BBSR Automation Flow"
+    click C "https://github.com/manjunath3divakar/arm-systemready/blob/flow_docs/docs/systemredy_devicetree_band_flow.md#2-bbrbsa-acs-automation-flow" "Go to bbr/bsa ACS Automation Flow"
+    click D "https://github.com/manjunath3divakar/arm-systemready/blob/flow_docs/docs/systemredy_devicetree_band_flow.md#network-boot.md#3-linux-automation-flow" "Go to Linux Automation Flow"
+    click E "https://github.com/manjunath3divakar/arm-systemready/blob/flow_docs/docs/systemredy_devicetree_band_flow.md#4-bbsr-automation-flow" "Go to BBSR Automation Flow"
 
     classDef grub fill:#dbeafe,stroke:#1d4ed8,stroke-width:3px,color:#0f172a;
     classDef decision fill:#ffffff,stroke:#2563eb,stroke-width:3px,color:#0f172a;
@@ -248,7 +248,7 @@ flowchart LR
     H --> I["ACS log parser<br/><br/>(apply waivers<br/>if configured)"]
     I --> J["Print<br/>ACS summary"]
 
-    click G "https://github.com/manjunath3divakar/arm-systemready/edit/flow_docs/docs/systemredy_devicetree_band_flow.md#network-boot" "Go to Network Boot Flow"
+    click G "https://github.com/manjunath3divakar/arm-systemready/blob/flow_docs/docs/systemredy_devicetree_band_flow.md#network-boot" "Go to Network Boot Flow"
     click H "https://github.com/manjunath3divakar/arm-systemready/blob/flow_docs/docs/systemredy_devicetree_band_flow.md#capsule-update-flow" "Go to Capsule Update Flow"
 
     classDef linux fill:#dcfce7,stroke:#16a34a,stroke-width:3px,color:#0f172a;
