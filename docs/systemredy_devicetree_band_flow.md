@@ -261,7 +261,9 @@ flowchart LR
 ```
 #### Capsule Update Flow
 
-> Linux prepares capsule update validation and reboots into UEFI. UEFI runs the capsule update flow, then Linux parses the result on the next boot.
+> Linux starts capsule update validation and resets into UEFI. UEFI runs the capsule update flow.  
+> If a capsule is applied, the platform may reset again as part of firmware update handling. Linux parses the result on the next boot.
+
 ```mermaid
 %%{init: {
   "theme": "base",
@@ -284,28 +286,34 @@ flowchart LR
     linkStyle default stroke:#2563eb,stroke-width:4px;
 
     A["Linux<br/>capsule check"]
-    A --> B["Prepare<br/>capsule update<br/>validation"]
-    B --> R1["Reset"]
+    A --> R1["Reset"]
 
-    R1 --> C["UEFI<br/>capsule update<br/>flow"]
-    C --> D["Store<br/>capsule result<br/>state"]
+    R1 --> B["UEFI<br/>capsule update<br/>flow"]
+    B --> C["Run capsule<br/>update validation"]
+    C --> D["Store capsule<br/>result state"]
+
+    D --> R2["Reset<br/><br/>(if firmware<br/>update applies)"]
     D --> E["Continue<br/>boot flow"]
 
+    R2 --> E
     E --> F["Boot back<br/>to Linux"]
-    F --> G["Parse<br/>capsule update<br/>result"]
+    F --> G["Parse capsule<br/>update result"]
 
     classDef linux fill:#dcfce7,stroke:#16a34a,stroke-width:3px,color:#0f172a;
     classDef uefi fill:#ffedd5,stroke:#ea580c,stroke-width:3px,color:#0f172a;
     classDef reboot fill:#fee2e2,stroke:#dc2626,stroke-width:3px,color:#0f172a;
     classDef result fill:#ede9fe,stroke:#7c3aed,stroke-width:3px,color:#0f172a;
 
-    class A,B,F linux;
-    class C,D,E uefi;
-    class R1 reboot;
+    class A,F linux;
+    class B,C,D,E uefi;
+    class R1,R2 reboot;
     class G result;
 ```
+
 #### Network Boot
+
 > This flow runs only when **HTTPS_BOOT_IMAGE_URL** is configured in [`system_config_dt.txt`](../common/config/system_config_dt.txt).
+
 ```mermaid
 %%{init: {
   "theme": "base",
@@ -328,18 +336,23 @@ flowchart LR
     linkStyle default stroke:#2563eb,stroke-width:4px;
 
     A["Linux<br/>pre-boot<br/>checks"]
-    A --> B["Prepare<br/>network boot"]
-    B --> R1["Reset"]
+    A --> R1["Reset"]
 
-    R1 --> C["UEFI<br/>network boot<br/>flow"]
-    C --> R2["Reset"]
+    R1 --> B["UEFI<br/>network boot<br/>flow"]
+    B --> R2["Reset"]
 
-    R2 --> D["Boot minimal<br/>network image"]
-    D --> E["Collect<br/>network boot<br/>logs"]
-    E --> R3["Reset"]
+    R2 --> C["U-Boot<br/>HTTP/HTTPS<br/>BootNext"]
 
+    subgraph MIN["ACS Minimal Image"]
+        direction LR
+        D["Boot minimal<br/>network image"]
+        D --> E["Collect<br/>network boot<br/>logs"]
+        E --> R3["Reset"]
+    end
+
+    C --> D
     R3 --> F["Boot back<br/>to ACS Linux"]
-    F --> G["Parse<br/>network boot<br/>result"]
+    F --> G["Parse network<br/>boot result"]
 
     classDef optional fill:#fef3c7,stroke:#d97706,stroke-width:3px,color:#0f172a;
     classDef uefi fill:#ffedd5,stroke:#ea580c,stroke-width:3px,color:#0f172a;
@@ -347,11 +360,13 @@ flowchart LR
     classDef linux fill:#dcfce7,stroke:#16a34a,stroke-width:3px,color:#0f172a;
     classDef result fill:#ede9fe,stroke:#7c3aed,stroke-width:3px,color:#0f172a;
 
-    class A,B,D,E optional;
-    class C uefi;
+    class A,C,D,E optional;
+    class B uefi;
     class R1,R2,R3 reboot;
     class F linux;
     class G result;
+
+    style MIN fill:#fff7ed,stroke:#d97706,stroke-width:3px,color:#0f172a;
 ```
 ---
 ### 3. Linux Automation Flow
