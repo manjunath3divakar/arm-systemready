@@ -43,7 +43,6 @@ The flow is divided into two parts:
 2. **Run Automation Flow** — what happens when the DT ACS image boots on the platform.
 
 ---
-
 ### DT Build Automation Flow
 
 Commands executed from **arm-systemready/SystemReady-devicetree-band/Yocto/**:
@@ -70,48 +69,49 @@ flowchart TD
     linkStyle default stroke:#2563eb,stroke-width:4px;
 
     Start((Start)) --> B["Run get_source.sh"]
-    B --> C["Fetch Yocto layers and ACS sources"]
-    C --> D["Prepare DT configs and common scripts"]
-    D --> E["Apply required patches"]
+    B --> C["Fetches Yocto layers and ACS sources"]
+    C --> D["Prepares DT configs and common scripts"]
+    D --> E["Applies required patches"]
 
-    E --> F["Run DT image build"]
+    E --> F["Run build-systemready-dt-band-live-image.sh"]
 
-    F --> G1["Build Linux kernel"]
-    F --> G2["Build initramfs"]
-    F --> G3["Build Yocto root filesystem"]
-    F --> G4["Build ACS test binaries"]
-    F --> G5["Build parser/helper tools"]
-    F --> G6["Include DT validation tools"]
+    F --> G1["Builds Linux kernel"]
+    F --> G2["Builds initramfs"]
+    F --> G3["Builds Yocto root filesystem"]
+    F --> G4["Builds ACS test binaries"]
+    F --> G5["Builds parser/helper tools"]
+    F --> G6["Includes DT validation tools"]
 
-    G1 --> H["Package DT ACS image"]
+    G1 --> H["Packages DT ACS image"]
     G2 --> H
     G3 --> H
     G4 --> H
     G5 --> H
     G6 --> H
 
-    H --> I["Add EFI boot files"]
-    I --> J["Add BBR/SCT test content"]
-    J --> K["Add BSA and PFDI UEFI apps"]
-    K --> L["Add capsule update and HTTPS boot scripts"]
-    L --> M["Add Linux Image, initramfs and rootfs"]
-    M --> N["Add config and result template directories"]
-    N --> O["Generate compressed DT ACS image"]
+    H --> I["Adds EFI boot files"]
+    I --> J["Adds BBR/SCT test content"]
+    J --> K["Adds BSA and PFDI UEFI apps"]
+    K --> L["Adds capsule update and HTTPS boot scripts"]
+    L --> M["Adds Linux Image, initramfs and rootfs"]
+    M --> N["Adds config and result template directories"]
+    N --> O["Generates compressed DT ACS image"]
     O --> End((End))
 
     classDef startEnd fill:#ffffff,stroke:#0f172a,stroke-width:3px,color:#0f172a;
+    classDef manualRun fill:#fef3c7,stroke:#d97706,stroke-width:3px,color:#0f172a;
     classDef source fill:#dbeafe,stroke:#1d4ed8,stroke-width:3px,color:#0f172a;
     classDef build fill:#ffedd5,stroke:#ea580c,stroke-width:3px,color:#0f172a;
     classDef package fill:#dcfce7,stroke:#16a34a,stroke-width:3px,color:#0f172a;
     classDef output fill:#ede9fe,stroke:#7c3aed,stroke-width:3px,color:#0f172a;
 
     class Start,End startEnd;
-    class B,C,D,E source;
-    class F,G1,G2,G3,G4,G5,G6 build;
+    class B,F manualRun;
+    class C,D,E source;
+    class G1,G2,G3,G4,G5,G6 build;
     class H,I,J,K,L,M,N package;
     class O output;
 ```
-
 ---
 ## DT Runtime Flowcharts
 
