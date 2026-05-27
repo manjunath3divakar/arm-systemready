@@ -49,6 +49,23 @@ Commands executed from **arm-systemready/SystemReady-band/**:
 ./build-scripts/build-systemready-band-live-image.sh
 ```
 
+### SR Build Automation Flow
+
+Commands executed from **arm-systemready/SystemReady-band/**:
+
+```text
+./build-scripts/get_source.sh
+./build-scripts/build-systemready-band-live-image.sh
+```
+### SR Build Automation Flow
+
+Commands executed from **arm-systemready/SystemReady-band/**:
+
+```text
+./build-scripts/get_source.sh
+./build-scripts/build-systemready-band-live-image.sh
+```
+
 ```mermaid
 %%{init: {
   "theme": "base",
@@ -66,40 +83,42 @@ flowchart TD
     linkStyle default stroke:#2563eb,stroke-width:4px;
 
     Start((Start)) --> B["Run get_source.sh"]
-    B --> C["Fetch ACS and dependent sources"]
-    C --> D["Prepare common configs and scripts"]
-    D --> E["Apply required patches"]
+    B --> C["Fetches ACS and dependent sources"]
+    C --> D["Prepares common configs and scripts"]
+    D --> E["Applies required patches"]
 
-    E --> F["Run build-all.sh"]
+    E --> F["Run build-systemready-band-live-image.sh"]
 
-    F --> G1["Build UEFI components"]
-    F --> G2["Build Linux kernel"]
-    F --> G3["Build Buildroot ramdisk"]
-    F --> G4["Build ACS test binaries"]
-    F --> G5["Build parser/helper tools"]
+    F --> G1["Builds UEFI components"]
+    F --> G2["Builds Linux kernel"]
+    F --> G3["Builds Buildroot ramdisk"]
+    F --> G4["Builds ACS test binaries"]
+    F --> G5["Builds parser/helper tools"]
 
-    G1 --> H["Package SR ACS image"]
+    G1 --> H["Packages SR ACS image"]
     G2 --> H
     G3 --> H
     G4 --> H
     G5 --> H
 
-    H --> I["Add EFI boot files"]
-    I --> J["Add ACS test content"]
-    J --> K["Add Linux Image and ramdisk"]
-    K --> L["Add config and result directories"]
-    L --> M["Generate compressed SR ACS image"]
+    H --> I["Adds EFI boot files"]
+    I --> J["Adds ACS test content"]
+    J --> K["Adds Linux Image and ramdisk"]
+    K --> L["Adds config and result directories"]
+    L --> M["Generates compressed SR ACS image"]
     M --> End((End))
 
     classDef startEnd fill:#ffffff,stroke:#0f172a,stroke-width:3px,color:#0f172a;
+    classDef manualRun fill:#fef3c7,stroke:#d97706,stroke-width:3px,color:#0f172a;
     classDef source fill:#dbeafe,stroke:#1d4ed8,stroke-width:3px,color:#0f172a;
     classDef build fill:#ffedd5,stroke:#ea580c,stroke-width:3px,color:#0f172a;
     classDef package fill:#dcfce7,stroke:#16a34a,stroke-width:3px,color:#0f172a;
     classDef output fill:#ede9fe,stroke:#7c3aed,stroke-width:3px,color:#0f172a;
 
     class Start,End startEnd;
-    class B,C,D,E source;
-    class F,G1,G2,G3,G4,G5 build;
+    class B,F manualRun;
+    class C,D,E source;
+    class G1,G2,G3,G4,G5 build;
     class H,I,J,K,L package;
     class M output;
 ```
@@ -108,7 +127,6 @@ flowchart TD
 - These diagrams show the high-level runtime automation flow.
 - **Reboot handling:** Some test suites intentionally reset the platform after saving results. After reset, the platform returns to **GRUB** and resumes from the next pending stage. Completed suites are skipped using result logs or state.
 ---
-
 ### 1. Runtime Entry Flow
 
 > By default, **SystemReady band ACS (Automation)** is selected and the full automation flow is executed.  
@@ -365,9 +383,9 @@ flowchart LR
 
 | File | Description |
 |---|---|
-| `acs_config.txt` | Contains ACS and specification version information |
-| `acs_run_config.ini` | Enables or disables test suites and passes test arguments |
-| `system_config.txt` | Contains platform details used in the final ACS report |
+|[`acs_config.txt`](../common/config/acs_config.txt) | Contains ACS and specification version information |
+|[`acs_run_config.init`](../common/config/acs_run_config.ini)  | Enables or disables test suites and passes test arguments |
+|[`system_config.txt`](../common/config/system_config.txt)  | Contains platform details used in the final ACS report |
 
 ---
 ## Result Collection
