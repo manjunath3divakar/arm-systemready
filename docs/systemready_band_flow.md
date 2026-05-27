@@ -392,10 +392,10 @@ flowchart LR
 
 ACS logs and summaries are stored under:
 ```text
-acs_results/
+acs_results_template/acs_results/
 ```
 
 Final parsed reports are generated under:
 ```text
-acs_results/acs_summary/
+acs_results_template/acs_results/acs_summary/
 ```
