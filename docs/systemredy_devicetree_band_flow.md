@@ -114,15 +114,13 @@ flowchart TD
 ```
 ---
 ## DT Runtime Flowcharts
-
-> These diagrams show the high-level runtime automation flow for the **SystemReady Devicetree Band ACS** image.  
-> Some flows reset the platform after saving state or results. After reset, the platform returns to **GRUB** and resumes the next pending step using logs/state files.
+- These diagrams show the high-level runtime automation flow for the **SystemReady Devicetree Band ACS** image. 
+- Some flows reset the platform after saving state or results. After reset, the platform returns to **GRUB** and resumes the next pending step using logs/state files.
 
 ---
-
 ### 1. Runtime Entry Flow
-
-> By default, **bbr/bsa ACS (Automation)** is selected and the full DT automation flow is executed.
+> By default, **bbr/bsa ACS (Automation)** is selected and the full DT automation flow is executed.  
+> Click a boot option box to jump to the corresponding flow section in GitHub.
 
 ```mermaid
 %%{init: {
@@ -142,31 +140,31 @@ flowchart TD
 }}%%
 
 flowchart LR
-
     linkStyle default stroke:#2563eb,stroke-width:4px;
 
     A["GRUB<br/>Menu"] --> B{"Boot<br/>option"}
-
     B --> C["bbr/bsa<br/>ACS<br/><b>Automation</b>"]
     B --> D["Linux<br/>Boot"]
     B --> E["BBSR<br/>Compliance<br/><b>Automation</b>"]
+
+    click C "https://github.com/manjunath3divakar/arm-systemready/blob/flow_docs/docs/systemready_devicetree_band_flow.md#2-bbrbsa-acs-automation-flow" "Go to bbr/bsa ACS Automation Flow"
+    click D "https://github.com/manjunath3divakar/arm-systemready/blob/flow_docs/docs/systemready_devicetree_band_flow.md#3-linux-automation-flow" "Go to Linux Automation Flow"
+    click E "https://github.com/manjunath3divakar/arm-systemready/blob/flow_docs/docs/systemready_devicetree_band_flow.md#4-bbsr-automation-flow" "Go to BBSR Automation Flow"
 
     classDef grub fill:#dbeafe,stroke:#1d4ed8,stroke-width:3px,color:#0f172a;
     classDef decision fill:#ffffff,stroke:#2563eb,stroke-width:3px,color:#0f172a;
     classDef linux fill:#dcfce7,stroke:#16a34a,stroke-width:3px,color:#0f172a;
     classDef uefi fill:#ffedd5,stroke:#ea580c,stroke-width:3px,color:#0f172a;
     classDef bbsr fill:#fef3c7,stroke:#d97706,stroke-width:3px,color:#0f172a;
-
     class A grub;
     class B decision;
     class C uefi;
     class D linux;
     class E bbsr;
 ```
-
 ---
 
-### 2. UEFI Automation Flow
+### 2. bbr/bsa ACS Automation Flow
 
 > This flow is executed when **bbr/bsa ACS (Automation)** is selected from GRUB.
 
@@ -213,8 +211,149 @@ flowchart LR
     class G linux;
 ```
 
----
+```mermaid
+%%{init: {
+  "theme": "base",
+  "flowchart": {
+    "curve": "linear",
+    "nodeSpacing": 30,
+    "rankSpacing": 40
+  },
+  "themeVariables": {
+    "fontFamily": "Arial",
+    "fontSize": "14px",
+    "primaryBorderColor": "#0f172a",
+    "lineColor": "#2563eb",
+    "tertiaryColor": "#ffffff"
+  }
+}}%%
 
+flowchart LR
+
+    linkStyle default stroke:#2563eb,stroke-width:4px;
+
+    A["• Linux<br/>  debug dump<br/>• Device driver<br/>  info"]
+    A --> B["FWTS"]
+    B --> C["BSA<br/>Linux"]
+
+    C --> D["• Devicetree<br/>  validation<br/>• PSCI<br/>  collection"]
+
+    D --> E["• DT kernel<br/>  selftest<br/>• Runtime<br/>  mapping check"]
+
+    E --> F["• Ethernet /<br/>  network test<br/>• Block device<br/>  check"]
+
+    F --> G["Network boot<br/>flow<br/><br/>(if configured)"]
+    G --> H["Capsule<br/>update flow"]
+
+    H --> I["ACS log parser<br/><br/>(apply waivers<br/>if configured)"]
+    I --> J["Print<br/>ACS summary"]
+
+    click G "https://github.com/manjunath3divakar/arm-systemready/edit/flow_docs/docs/systemredy_devicetree_band_flow.md#network-boot" "Go to Network Boot Flow"
+    click H "https://github.com/manjunath3divakar/arm-systemready/blob/flow_docs/docs/systemredy_devicetree_band_flow.md#capsule-update-flow" "Go to Capsule Update Flow"
+
+    classDef linux fill:#dcfce7,stroke:#16a34a,stroke-width:3px,color:#0f172a;
+    classDef optional fill:#fef3c7,stroke:#d97706,stroke-width:3px,color:#0f172a;
+    classDef result fill:#ede9fe,stroke:#7c3aed,stroke-width:3px,color:#0f172a;
+
+    class A,B,C,D,E,F,H linux;
+    class G optional;
+    class I,J result;
+```
+#### Capsule Update Flow
+
+> Linux prepares capsule update validation and reboots into UEFI. UEFI runs the capsule update flow, then Linux parses the result on the next boot.
+```mermaid
+%%{init: {
+  "theme": "base",
+  "flowchart": {
+    "curve": "linear",
+    "nodeSpacing": 25,
+    "rankSpacing": 35
+  },
+  "themeVariables": {
+    "fontFamily": "Arial",
+    "fontSize": "14px",
+    "primaryBorderColor": "#0f172a",
+    "lineColor": "#2563eb",
+    "tertiaryColor": "#ffffff"
+  }
+}}%%
+
+flowchart LR
+
+    linkStyle default stroke:#2563eb,stroke-width:4px;
+
+    A["Linux<br/>capsule check"]
+    A --> B["Prepare<br/>capsule update<br/>validation"]
+    B --> R1["Reset"]
+
+    R1 --> C["UEFI<br/>capsule update<br/>flow"]
+    C --> D["Store<br/>capsule result<br/>state"]
+    D --> E["Continue<br/>boot flow"]
+
+    E --> F["Boot back<br/>to Linux"]
+    F --> G["Parse<br/>capsule update<br/>result"]
+
+    classDef linux fill:#dcfce7,stroke:#16a34a,stroke-width:3px,color:#0f172a;
+    classDef uefi fill:#ffedd5,stroke:#ea580c,stroke-width:3px,color:#0f172a;
+    classDef reboot fill:#fee2e2,stroke:#dc2626,stroke-width:3px,color:#0f172a;
+    classDef result fill:#ede9fe,stroke:#7c3aed,stroke-width:3px,color:#0f172a;
+
+    class A,B,F linux;
+    class C,D,E uefi;
+    class R1 reboot;
+    class G result;
+```
+#### Network Boot
+> This flow runs only when **HTTPS_BOOT_IMAGE_URL** is configured in [`system_config_dt.txt`](../common/config/system_config_dt.txt).
+```mermaid
+%%{init: {
+  "theme": "base",
+  "flowchart": {
+    "curve": "linear",
+    "nodeSpacing": 25,
+    "rankSpacing": 35
+  },
+  "themeVariables": {
+    "fontFamily": "Arial",
+    "fontSize": "14px",
+    "primaryBorderColor": "#0f172a",
+    "lineColor": "#2563eb",
+    "tertiaryColor": "#ffffff"
+  }
+}}%%
+
+flowchart LR
+
+    linkStyle default stroke:#2563eb,stroke-width:4px;
+
+    A["Linux<br/>pre-boot<br/>checks"]
+    A --> B["Prepare<br/>network boot"]
+    B --> R1["Reset"]
+
+    R1 --> C["UEFI<br/>network boot<br/>flow"]
+    C --> R2["Reset"]
+
+    R2 --> D["Boot minimal<br/>network image"]
+    D --> E["Collect<br/>network boot<br/>logs"]
+    E --> R3["Reset"]
+
+    R3 --> F["Boot back<br/>to ACS Linux"]
+    F --> G["Parse<br/>network boot<br/>result"]
+
+    classDef optional fill:#fef3c7,stroke:#d97706,stroke-width:3px,color:#0f172a;
+    classDef uefi fill:#ffedd5,stroke:#ea580c,stroke-width:3px,color:#0f172a;
+    classDef reboot fill:#fee2e2,stroke:#dc2626,stroke-width:3px,color:#0f172a;
+    classDef linux fill:#dcfce7,stroke:#16a34a,stroke-width:3px,color:#0f172a;
+    classDef result fill:#ede9fe,stroke:#7c3aed,stroke-width:3px,color:#0f172a;
+
+    class A,B,D,E optional;
+    class C uefi;
+    class R1,R2,R3 reboot;
+    class F linux;
+    class G result;
+```
+---
 ### 3. Linux Automation Flow
 
 > This flow is executed either after **bbr/bsa ACS (Automation)** completes the UEFI phase, or directly when **Linux Boot** is selected from GRUB.
@@ -245,131 +384,34 @@ flowchart LR
     B --> C["BSA<br/>Linux"]
 
     C --> D["• Devicetree<br/>  validation<br/>• PSCI<br/>  collection"]
+
     D --> E["• DT kernel<br/>  selftest<br/>• Runtime<br/>  mapping check"]
 
     E --> F["• Ethernet /<br/>  network test<br/>• Block device<br/>  check"]
 
-    F --> G["ACS log parser<br/><br/>(apply waivers<br/>if configured)"]
-    G --> H["Print<br/>ACS summary"]
+    F --> G["Network boot<br/>flow<br/><br/>(if configured)"]
+    G --> H["Capsule<br/>update flow"]
+
+    H --> I["ACS log parser<br/><br/>(apply waivers<br/>if configured)"]
+    I --> J["Print<br/>ACS summary"]
+
+    click G "https://github.com/manjunath3divakar/arm-systemready/blob/flow_docs/docs/systemready_dt_band_flow.md#4-network-boot-flow" "Go to Network Boot Flow"
+    click H "https://github.com/manjunath3divakar/arm-systemready/blob/flow_docs/docs/systemready_dt_band_flow.md#5-capsule-update-flow" "Go to Capsule Update Flow"
 
     classDef linux fill:#dcfce7,stroke:#16a34a,stroke-width:3px,color:#0f172a;
-    classDef result fill:#ede9fe,stroke:#7c3aed,stroke-width:3px,color:#0f172a;
-
-    class A,B,C,D,E,F linux;
-    class G,H result;
-```
-
----
-
-### 4. Network Boot Flow
-
-> This flow runs only when **HTTPS_BOOT_IMAGE_URL** is configured in `system_config.txt`.
-
-```mermaid
-%%{init: {
-  "theme": "base",
-  "flowchart": {
-    "curve": "linear",
-    "nodeSpacing": 25,
-    "rankSpacing": 35
-  },
-  "themeVariables": {
-    "fontFamily": "Arial",
-    "fontSize": "14px",
-    "primaryBorderColor": "#0f172a",
-    "lineColor": "#2563eb",
-    "tertiaryColor": "#ffffff"
-  }
-}}%%
-
-flowchart LR
-
-    linkStyle default stroke:#2563eb,stroke-width:4px;
-
-    A["Linux<br/>pre-boot<br/>checks"]
-    A --> B["Generate<br/>UEFI HTTPS<br/>boot config"]
-    B --> R1["Reset"]
-
-    R1 --> C["UEFI<br/>https_boot.nsh"]
-    C --> D["Run<br/>ledge.efi"]
-    D --> R2["Reset"]
-
-    R2 --> E["U-Boot<br/>HTTP/HTTPS<br/>BootNext"]
-    E --> F["Boot ACS<br/>minimal<br/>network image"]
-    F --> G["Collect<br/>network boot<br/>logs"]
-    G --> R3["Reset"]
-
-    R3 --> H["Boot back<br/>to main<br/>ACS Linux"]
-    H --> I["Network boot<br/>result parser"]
-
     classDef optional fill:#fef3c7,stroke:#d97706,stroke-width:3px,color:#0f172a;
-    classDef uefi fill:#ffedd5,stroke:#ea580c,stroke-width:3px,color:#0f172a;
-    classDef reboot fill:#fee2e2,stroke:#dc2626,stroke-width:3px,color:#0f172a;
-    classDef linux fill:#dcfce7,stroke:#16a34a,stroke-width:3px,color:#0f172a;
     classDef result fill:#ede9fe,stroke:#7c3aed,stroke-width:3px,color:#0f172a;
 
-    class A,B,E,F,G optional;
-    class C,D uefi;
-    class R1,R2,R3 reboot;
-    class H linux;
-    class I result;
+    class A,B,C,D,E,F,H linux;
+    class G optional;
+    class I,J result;
 ```
-
 ---
+### 4. BBSR Automation Flow
 
-### 5. Capsule Update Flow
-
-> Linux prepares the capsule update check and reboots into UEFI. UEFI runs the capsule update flow, then Linux parses the result on the next boot.
-
-```mermaid
-%%{init: {
-  "theme": "base",
-  "flowchart": {
-    "curve": "linear",
-    "nodeSpacing": 25,
-    "rankSpacing": 35
-  },
-  "themeVariables": {
-    "fontFamily": "Arial",
-    "fontSize": "14px",
-    "primaryBorderColor": "#0f172a",
-    "lineColor": "#2563eb",
-    "tertiaryColor": "#ffffff"
-  }
-}}%%
-
-flowchart LR
-
-    linkStyle default stroke:#2563eb,stroke-width:4px;
-
-    A["Linux<br/>capsule check"]
-    A --> B["Prepare<br/>capsule update<br/>validation"]
-    B --> R1["Reset"]
-
-    R1 --> C["UEFI<br/>capsule<br/>update flow"]
-    C --> D["Run<br/>CapsuleApp.efi"]
-    D --> E["Store<br/>capsule result<br/>state"]
-    E --> F["Continue<br/>boot flow"]
-
-    F --> G["Boot back<br/>to Linux"]
-    G --> H["Parse capsule<br/>update result"]
-
-    classDef linux fill:#dcfce7,stroke:#16a34a,stroke-width:3px,color:#0f172a;
-    classDef uefi fill:#ffedd5,stroke:#ea580c,stroke-width:3px,color:#0f172a;
-    classDef reboot fill:#fee2e2,stroke:#dc2626,stroke-width:3px,color:#0f172a;
-    classDef result fill:#ede9fe,stroke:#7c3aed,stroke-width:3px,color:#0f172a;
-
-    class A,B,G linux;
-    class C,D,E,F uefi;
-    class R1 reboot;
-    class H result;
-```
-
----
-
-### 6. BBSR Automation Flow
-
-> DT BBSR includes Secure Boot key provisioning, secure Linux execution, and Secure Boot clearing before returning to Linux prompt.
+> - This flow is executed when **BBSR Compliance (Automation)** is selected from GRUB.  
+> - Secure Boot key provisioning is attempted automatically. If automatic provisioning does not complete, provision the keys manually and run the BBSR automation again.  
+> - In DT band, after BBSR logs and summary are generated, Secure Boot is cleared before returning to the Linux prompt.
 
 ```mermaid
 %%{init: {
@@ -402,17 +444,16 @@ flowchart LR
 
     D --> E["Secure<br/>Linux boot"]
     E --> F["Collect<br/>BBSR logs<br/><br/>(FWTS / TPM)"]
+    F --> G["ACS log parser<br/><br/>BBSR summary"]
 
-    F --> G{"Secure Boot<br/>still enabled?"}
-    G -->|"yes"| H["Request<br/>Secure Boot<br/>clearance"]
-    G -->|"no"| M["ACS log parser<br/><br/>BBSR summary"]
+    G --> H{"Secure Boot<br/>still enabled?"}
 
-    H --> R1["Reset"]
+    H -->|"yes"| R1["Reset"]
     R1 --> I["UEFI clears<br/>PK"]
     I --> R2["Reset"]
     R2 --> J["Boot Linux<br/>terminal / prompt"]
 
-    J --> M
+    H -->|"no"| J
 
     classDef bbsr fill:#fef3c7,stroke:#d97706,stroke-width:3px,color:#0f172a;
     classDef decision fill:#ffffff,stroke:#2563eb,stroke-width:3px,color:#0f172a;
@@ -422,9 +463,9 @@ flowchart LR
     classDef result fill:#ede9fe,stroke:#7c3aed,stroke-width:3px,color:#0f172a;
 
     class A,C,D bbsr;
-    class B,G decision;
+    class B,H decision;
     class E,F,J linux;
-    class H,M result;
+    class G result;
     class R1,R2 reboot;
     class I uefi;
 ```
