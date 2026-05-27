@@ -148,7 +148,7 @@ flowchart LR
     B --> E["BBSR<br/>Compliance<br/><b>Automation</b>"]
 
     click C "https://github.com/manjunath3divakar/arm-systemready/blob/flow_docs/docs/systemredy_devicetree_band_flow.md#2-bbrbsa-acs-automation-flow" "Go to bbr/bsa ACS Automation Flow"
-    click D "https://github.com/manjunath3divakar/arm-systemready/blob/flow_docs/docs/systemredy_devicetree_band_flow.md#network-boot.md#3-linux-automation-flow" "Go to Linux Automation Flow"
+    click D "https://github.com/manjunath3divakar/arm-systemready/blob/flow_docs/docs/systemredy_devicetree_band_flow.md#3-linux-automation-flow" "Go to Linux Automation Flow"
     click E "https://github.com/manjunath3divakar/arm-systemready/blob/flow_docs/docs/systemredy_devicetree_band_flow.md#4-bbsr-automation-flow" "Go to BBSR Automation Flow"
 
     classDef grub fill:#dbeafe,stroke:#1d4ed8,stroke-width:3px,color:#0f172a;
