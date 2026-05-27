@@ -141,9 +141,9 @@ flowchart LR
     B --> D["Linux<br/>Boot"]
     B --> E["BBSR<br/>Compliance<br/><b>Automation</b>"]
 
-    click C "https://github.com/<ORG>/<REPO>/blob/<BRANCH>/<PATH_TO_README>.md#2-systemready-band-acs-automation-flow" "Go to SystemReady band ACS Automation Flow"
-    click D "https://github.com/<ORG>/<REPO>/blob/<BRANCH>/<PATH_TO_README>.md#3-linux-automation-flow" "Go to Linux Automation Flow"
-    click E "https://github.com/<ORG>/<REPO>/blob/<BRANCH>/<PATH_TO_README>.md#4-bbsr-automation-flow" "Go to BBSR Automation Flow"
+    click C "https://github.com/manjunath3divakar/arm-systemready/edit/flow_docs/docs/systemready_band_flow.md#2-systemready-band-acs-automation-flow" "Go to SystemReady band ACS Automation Flow"
+    click D "https://github.com/manjunath3divakar/arm-systemready/edit/flow_docs/docs/systemready_band_flow.md#3-linux-automation-flow" "Go to Linux Automation Flow"
+    click E "https://github.com/manjunath3divakar/arm-systemready/edit/flow_docs/docs/systemready_band_flow.md#4-bbsr-automation-flow" "Go to BBSR Automation Flow"
 
     classDef grub fill:#dbeafe,stroke:#1d4ed8,stroke-width:3px,color:#0f172a;
     classDef decision fill:#ffffff,stroke:#2563eb,stroke-width:3px,color:#0f172a;
@@ -160,7 +160,7 @@ flowchart LR
 
 ---
 
-### 2. SystemReady band ACS Flow
+### 2. SystemReady band ACS Automation Flow
 
 > This flow is executed when **SystemReady band ACS (Automation)** is selected from GRUB.
 
