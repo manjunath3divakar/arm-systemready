@@ -399,3 +399,5 @@ Final parsed reports are generated under:
 ```text
 acs_results_template/acs_results/acs_summary/
 ```
+--------------
+*Copyright (c) 2026, Arm Limited and Contributors. All rights reserved.*
