@@ -166,6 +166,7 @@ flowchart LR
 > This flow is executed when **SystemReady band ACS (Automation)** is selected from GRUB.
 
 ##### UEFI ACS Flow
+
 ```mermaid
 %%{init: {
   "theme": "base",
@@ -194,7 +195,7 @@ flowchart LR
     C --> R1["Reset"]
 
     R1 -->|"SBSA enabled"| D["SBSA<br/>UEFI"]
-    R1 -->|"SBSA not enabled"| E["Boot<br/>Linux"]
+    R1 -->|"SBSA not enabled"| E["Go to<br/>ACS Linux"]
 
     D --> R2["Reset"]
     R2 --> E
@@ -208,7 +209,14 @@ flowchart LR
     class E linux;
 ```
 
+<div align="center">
+
+⬇️ **Continues with ACS Linux flow**
+
+</div>
+
 ##### Linux ACS Flow
+
 ```mermaid
 %%{init: {
   "theme": "base",
@@ -230,27 +238,30 @@ flowchart LR
 
     linkStyle default stroke:#2563eb,stroke-width:4px;
 
-    A["• Linux<br/>  debug dump<br/>• Device driver<br/>  info"]
-    A --> B["FWTS"]
+    A["ACS<br/>Linux"]
+    A --> B["• Linux<br/>  debug dump<br/>• Device driver<br/>  info"]
+    B --> C["FWTS"]
 
-    B --> C["BSA<br/>Linux"]
+    C --> D["BSA<br/>Linux"]
 
-    B -->|"SBMR enabled"| D["SBMR<br/>in-band"]
-    D --> C
+    C -->|"SBMR enabled"| E["SBMR<br/>in-band"]
+    E --> D
 
-    C --> E["• EDK2<br/>  test parser<br/>• Post<br/>  scripts"]
+    D --> F["• EDK2<br/>  test parser<br/>• Post<br/>  scripts"]
 
-    C -->|"SBSA enabled"| F["SBSA<br/>Linux"]
-    F --> E
+    D -->|"SBSA enabled"| G["SBSA<br/>Linux"]
+    G --> F
 
-    E --> G["ACS log parser<br/><br/>(apply waivers<br/>if configured)"]
-    G --> H["Print<br/>ACS summary"]
+    F --> H["ACS log parser<br/><br/>(apply waivers<br/>if configured)"]
+    H --> I["Print<br/>ACS summary"]
 
+    classDef entry fill:#dbeafe,stroke:#1d4ed8,stroke-width:3px,color:#0f172a;
     classDef linux fill:#dcfce7,stroke:#16a34a,stroke-width:3px,color:#0f172a;
     classDef result fill:#ede9fe,stroke:#7c3aed,stroke-width:3px,color:#0f172a;
 
-    class A,B,C,D,F linux;
-    class E,G,H result;
+    class A entry;
+    class B,C,D,E,G linux;
+    class F,H,I result;
 ```
 
 ---
@@ -280,27 +291,30 @@ flowchart LR
 
     linkStyle default stroke:#2563eb,stroke-width:4px;
 
-    A["• Linux<br/>  debug dump<br/>• Device driver<br/>  info"]
-    A --> B["FWTS"]
+    A["ACS Linux<br/>initialization"]
+    A --> B["• Linux<br/>  debug dump<br/>• Device driver<br/>  info"]
+    B --> C["FWTS"]
 
-    B --> C["BSA<br/>Linux"]
+    C --> D["BSA<br/>Linux"]
 
-    B -->|"SBMR enabled"| D["SBMR<br/>in-band"]
-    D --> C
+    C -->|"SBMR enabled"| E["SBMR<br/>in-band"]
+    E --> D
 
-    C --> E["• EDK2<br/>  test parser<br/>• Post<br/>  scripts"]
+    D --> F["• EDK2<br/>  test parser<br/>• Post<br/>  scripts"]
 
-    C -->|"SBSA enabled"| F["SBSA<br/>Linux"]
-    F --> E
+    D -->|"SBSA enabled"| G["SBSA<br/>Linux"]
+    G --> F
 
-    E --> G["ACS log parser<br/><br/>(apply waivers<br/>if configured)"]
-    G --> H["Print<br/>ACS summary"]
+    F --> H["ACS log parser<br/><br/>(apply waivers<br/>if configured)"]
+    H --> I["Print<br/>ACS summary"]
 
+    classDef entry fill:#dbeafe,stroke:#1d4ed8,stroke-width:3px,color:#0f172a;
     classDef linux fill:#dcfce7,stroke:#16a34a,stroke-width:3px,color:#0f172a;
     classDef result fill:#ede9fe,stroke:#7c3aed,stroke-width:3px,color:#0f172a;
 
-    class A,B,C,D,F linux;
-    class E,G,H result;
+    class A entry;
+    class B,C,D,E,G linux;
+    class F,H,I result;
 ```
 
 ---
