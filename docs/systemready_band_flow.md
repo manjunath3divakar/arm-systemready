@@ -165,6 +165,7 @@ flowchart LR
 
 > This flow is executed when **SystemReady band ACS (Automation)** is selected from GRUB.
 
+##### UEFI ACS Flow
 ```mermaid
 %%{init: {
   "theme": "base",
@@ -206,6 +207,8 @@ flowchart LR
     class R1,R2 reboot;
     class E linux;
 ```
+
+##### Linux ACS Flow
 ```mermaid
 %%{init: {
   "theme": "base",
