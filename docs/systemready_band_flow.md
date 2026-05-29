@@ -211,7 +211,7 @@ flowchart LR
 
 <div align="center">
 
-⬇️ **Continues with ACS Linux flow**
+**➡️ Continues with ACS Linux flow**
 
 </div>
 
@@ -291,7 +291,7 @@ flowchart LR
 
     linkStyle default stroke:#2563eb,stroke-width:4px;
 
-    A["ACS Linux<br/>initialization"]
+    A["ACS Linux<br/>Initialization"]
     A --> B["• Linux<br/>  debug dump<br/>• Device driver<br/>  info"]
     B --> C["FWTS"]
 
