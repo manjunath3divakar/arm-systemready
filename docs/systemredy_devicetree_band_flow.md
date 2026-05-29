@@ -167,6 +167,7 @@ flowchart LR
 ### 2. bbr/bsa ACS Automation Flow
 
 > This flow is executed when **bbr/bsa ACS (Automation)** is selected from GRUB.
+##### UEFI ACS Flow
 
 ```mermaid
 %%{init: {
@@ -199,17 +200,24 @@ flowchart LR
     D --> R2["Reset"]
 
     R2 --> E["UEFI<br/>ping test"]
-    E --> F["Capsule<br/>update flow"]
-    F --> G["Boot<br/>Linux"]
+    E --> F["Go to<br/>ACS Linux"]
 
     classDef uefi fill:#ffedd5,stroke:#ea580c,stroke-width:3px,color:#0f172a;
     classDef reboot fill:#fee2e2,stroke:#dc2626,stroke-width:3px,color:#0f172a;
     classDef linux fill:#dcfce7,stroke:#16a34a,stroke-width:3px,color:#0f172a;
 
-    class A,B,C,D,E,F uefi;
+    class A,B,C,D,E uefi;
     class R1,R2 reboot;
-    class G linux;
+    class F linux;
 ```
+
+<div align="center">
+
+**➡️ Continues with ACS Linux flow**
+
+</div>
+
+##### Linux ACS Flow
 
 ```mermaid
 %%{init: {
@@ -232,33 +240,38 @@ flowchart LR
 
     linkStyle default stroke:#2563eb,stroke-width:4px;
 
-    A["• Linux<br/>  debug dump<br/>• Device driver<br/>  info"]
-    A --> B["FWTS"]
-    B --> C["BSA<br/>Linux"]
+    A["ACS<br/>Linux"]
 
-    C --> D["• Devicetree<br/>  validation<br/>• PSCI<br/>  collection"]
+    A --> B["• Linux<br/>  debug dump<br/>• Device driver<br/>  info"]
+    B --> C["FWTS"]
+    C --> D["BSA<br/>Linux"]
 
-    D --> E["• DT kernel<br/>  selftest<br/>• Runtime<br/>  mapping check"]
+    D --> E["• Devicetree<br/>  validation<br/>• PSCI<br/>  collection"]
 
-    E --> F["• Ethernet /<br/>  network test<br/>• Block device<br/>  check"]
+    E --> F["• DT kernel<br/>  selftest<br/>• Runtime<br/>  mapping check"]
 
-    F --> G["Network boot<br/>flow<br/><br/>(if configured)"]
-    G --> H["Capsule<br/>update flow"]
+    F --> G["• Ethernet /<br/>  network test<br/>• Block device<br/>  check"]
 
-    H --> I["ACS log parser<br/><br/>(apply waivers<br/>if configured)"]
-    I --> J["Print<br/>ACS summary"]
+    G --> H["Network boot<br/>flow<br/><br/>(if configured)"]
+    H --> I["Capsule<br/>update flow"]
 
-    click G "https://github.com/manjunath3divakar/arm-systemready/blob/flow_docs/docs/systemredy_devicetree_band_flow.md#network-boot" "Go to Network Boot Flow"
-    click H "https://github.com/manjunath3divakar/arm-systemready/blob/flow_docs/docs/systemredy_devicetree_band_flow.md#capsule-update-flow" "Go to Capsule Update Flow"
+    I --> J["ACS log parser<br/><br/>(apply waivers<br/>if configured)"]
+    J --> K["Print<br/>ACS summary"]
 
+    click H "https://github.com/manjunath3divakar/arm-systemready/blob/flow_docs/docs/systemredy_devicetree_band_flow.md#network-boot" "Go to Network Boot Flow"
+    click I "https://github.com/manjunath3divakar/arm-systemready/blob/flow_docs/docs/systemredy_devicetree_band_flow.md#capsule-update-flow" "Go to Capsule Update Flow"
+
+    classDef entry fill:#dbeafe,stroke:#1d4ed8,stroke-width:3px,color:#0f172a;
     classDef linux fill:#dcfce7,stroke:#16a34a,stroke-width:3px,color:#0f172a;
     classDef optional fill:#fef3c7,stroke:#d97706,stroke-width:3px,color:#0f172a;
     classDef result fill:#ede9fe,stroke:#7c3aed,stroke-width:3px,color:#0f172a;
 
-    class A,B,C,D,E,F,H linux;
-    class G optional;
-    class I,J result;
+    class A entry;
+    class B,C,D,E,F,G,I linux;
+    class H optional;
+    class J,K result;
 ```
+
 #### Capsule Update Flow
 
 > Linux starts capsule update validation and resets into UEFI. UEFI runs the capsule update flow.  
@@ -391,32 +404,36 @@ flowchart LR
 
     linkStyle default stroke:#2563eb,stroke-width:4px;
 
-    A["• Linux<br/>  debug dump<br/>• Device driver<br/>  info"]
-    A --> B["FWTS"]
-    B --> C["BSA<br/>Linux"]
+    A["ACS Linux<br/>initialization"]
 
-    C --> D["• Devicetree<br/>  validation<br/>• PSCI<br/>  collection"]
+    A --> B["• Linux<br/>  debug dump<br/>• Device driver<br/>  info"]
+    B --> C["FWTS"]
+    C --> D["BSA<br/>Linux"]
 
-    D --> E["• DT kernel<br/>  selftest<br/>• Runtime<br/>  mapping check"]
+    D --> E["• Devicetree<br/>  validation<br/>• PSCI<br/>  collection"]
 
-    E --> F["• Ethernet /<br/>  network test<br/>• Block device<br/>  check"]
+    E --> F["• DT kernel<br/>  selftest<br/>• Runtime<br/>  mapping check"]
 
-    F --> G["Network boot<br/>flow<br/><br/>(if configured)"]
-    G --> H["Capsule<br/>update flow"]
+    F --> G["• Ethernet /<br/>  network test<br/>• Block device<br/>  check"]
 
-    H --> I["ACS log parser<br/><br/>(apply waivers<br/>if configured)"]
-    I --> J["Print<br/>ACS summary"]
+    G --> H["Network boot<br/>flow<br/><br/>(if configured)"]
+    H --> I["Capsule<br/>update flow"]
 
-    click G "https://github.com/manjunath3divakar/arm-systemready/blob/flow_docs/docs/systemready_dt_band_flow.md#4-network-boot-flow" "Go to Network Boot Flow"
-    click H "https://github.com/manjunath3divakar/arm-systemready/blob/flow_docs/docs/systemready_dt_band_flow.md#5-capsule-update-flow" "Go to Capsule Update Flow"
+    I --> J["ACS log parser<br/><br/>(apply waivers<br/>if configured)"]
+    J --> K["Print<br/>ACS summary"]
 
+    click H "https://github.com/manjunath3divakar/arm-systemready/blob/flow_docs/docs/systemredy_devicetree_band_flow.md#network-boot" "Go to Network Boot Flow"
+    click I "https://github.com/manjunath3divakar/arm-systemready/blob/flow_docs/docs/systemredy_devicetree_band_flow.md#capsule-update-flow" "Go to Capsule Update Flow"
+
+    classDef entry fill:#dbeafe,stroke:#1d4ed8,stroke-width:3px,color:#0f172a;
     classDef linux fill:#dcfce7,stroke:#16a34a,stroke-width:3px,color:#0f172a;
     classDef optional fill:#fef3c7,stroke:#d97706,stroke-width:3px,color:#0f172a;
     classDef result fill:#ede9fe,stroke:#7c3aed,stroke-width:3px,color:#0f172a;
 
-    class A,B,C,D,E,F,H linux;
-    class G optional;
-    class I,J result;
+    class A entry;
+    class B,C,D,E,F,G,I linux;
+    class H optional;
+    class J,K result;
 ```
 ---
 ### 4. BBSR Automation Flow
