@@ -58,18 +58,12 @@ do_configure() {
     echo "Applying SCT patch ..."
     git apply --ignore-whitespace --ignore-space-change ${S}/bbr-acs/common/patches/edk2-test-bbr.patch
     git apply --ignore-whitespace --ignore-space-change ${S}/bbr-acs/common/patches/edk2-test-bbr-build.patch
-    # Copy sbbr-test cases from bbr-acs to uefi-sct
-    cp -r ${SBBR_TEST_DIR}/SbbrBootServices uefi-sct/SctPkg/TestCase/UEFI/EFI/BootServices/
-    cp -r ${SBBR_TEST_DIR}/SbbrEfiSpecVerLvl ${SBBR_TEST_DIR}/SbbrRequiredUefiProtocols ${SBBR_TEST_DIR}/SbbrSysEnvConfig uefi-sct/SctPkg/TestCase/UEFI/EFI/Generic/
     cp -r ${EBBR_TEST_DIR}/EfiEbbrProfileTableTest  uefi-sct/SctPkg/TestCase/UEFI/EFI/Generic/EfiCompliant/
     cp ${SBBR_TEST_DIR}/BBR_SCT.dsc uefi-sct/SctPkg/UEFI/
     cp ${SBBR_TEST_DIR}/build_bbr.sh uefi-sct/SctPkg/
     cp ${S}/bbr-acs/ebbr/config/EfiCompliant_EBBR.ini uefi-sct/SctPkg/UEFI/
 
     echo "Applying BBSR ACS patch..."
-    cp -r ${S}/bbr-acs/bbsr/sct-tests/BBSRVariableSizeTest uefi-sct/SctPkg/TestCase/UEFI/EFI/RuntimeServices
-    cp -r ${S}/bbr-acs/bbsr/sct-tests/PlatformResetAttackMitigationPsciTest uefi-sct/SctPkg/TestCase/UEFI/EFI/Generic/
-
     git apply --ignore-whitespace --ignore-space-change ${S}/bbr-acs/bbsr/patches/0001-BBSR-Patch-for-UEFI-SCT-Build.patch
     git apply --ignore-whitespace --ignore-space-change ${S}/bbr-acs/bbsr/patches/0001-UEFI-SCT-SecureBoot-change-attribute-check-to-warning.patch
 
