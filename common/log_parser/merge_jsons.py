@@ -436,6 +436,9 @@ def merge_json_files(json_files, output_file):
         elif "READ_WRITE_CHECK_BLK_DEVICES" in fn:
             section_name = "Suite_Name: Read Write Check Block Devices"
             suite_key    = "READ_WRITE_CHECK_BLK_DEVICES"
+        elif "spin_table_check" in fn.lower():
+            section_name = "Suite_Name: EBBR Spin-table Usage Validation"
+            suite_key    = "SPIN_TABLE_CHECK"
         elif "NETWORK_BOOT" in fn or "network_boot" in fn.lower():
             section_name = "Suite_Name: Network boot"
             suite_key    = "NETWORK_BOOT"
@@ -490,8 +493,10 @@ def merge_json_files(json_files, output_file):
         lookup_suite_key = suite_key.lower()
         standalone_aliases = {
             "dt_kselftest", "dt_validate", "ethtool_test",
-            "read_write_check_blk_devices", "psci", "capsule update", "network_boot", "smbios", "runtime_dev_map" ,
-            "reserved_memory_map", "dtb_alignment", "pcie_option_rom_arch_audit"
+            "read_write_check_blk_devices", "spin_table_check",
+            "psci", "capsule update", "network_boot", "smbios",
+            "runtime_dev_map", "reserved_memory_map", "dtb_alignment",
+            "pcie_option_rom_arch_audit"
         }
         if lookup_suite_key in standalone_aliases or lookup_suite_key.startswith("os_"):
             lookup_suite_key = "standalone"
