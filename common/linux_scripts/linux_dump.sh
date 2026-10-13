@@ -62,7 +62,23 @@ hwclock > hwclock.txt 2>&1
 efibootmgr > efibootmgr.txt 2>&1
 efibootmgr -t 20 > efibootmgr-t-20.txt 2>&1
 efibootmgr -t 5 > efibootmgr-t-5.txt 2>&1
+
+# Check boot entry creation and remove the created boot variable
+before=$(efibootmgr | sed -n 's/^Boot\([0-9A-Fa-f]\{4\}\).*/\1/p')
 efibootmgr -c > efibootmgr-c.txt 2>&1
+after=$(efibootmgr | sed -n 's/^Boot\([0-9A-Fa-f]\{4\}\).*/\1/p')
+for entry in $after; do
+    echo "$before" | grep -qx "$entry" || {
+        echo "" >> efibootmgr-c.txt
+        echo "Removing boot entry created by efibootmgr -c: Boot$entry" \
+            >> efibootmgr-c.txt
+        efibootmgr -b "$entry" -B >> efibootmgr-c.txt 2>&1
+        if [ $? -ne 0 ]; then
+            echo "ERROR: Failed to remove Boot$entry" >> efibootmgr-c.txt
+        fi
+        break
+    }
+done
 
 ifconfig > ifconfig.txt 2>&1
 ip addr show > ip-addr-show.txt 2>&1
