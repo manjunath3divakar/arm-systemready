@@ -104,6 +104,7 @@ create_fatpart ()
 
     mcopy -i $fatpart_name ${UEFI_APPS_PATH}/CapsuleApp.efi ::/acs_tests/app
     mcopy -i $fatpart_name ${UEFI_APPS_PATH}/PcieOptionRomArchAudit.efi ::/acs_tests/app
+    mcopy -i $fatpart_name ${UEFI_APPS_PATH}/Runtime64KiBPageAttributeCheck.efi ::/acs_tests/app
     mcopy -i $fatpart_name $OUTDIR/Parser.efi  ::/acs_tests/parser
     mcopy -i $fatpart_name $CONFIG_PARSER_FILE  ::/acs_tests/parser
     mcopy -i $fatpart_name $CONFIG_PARSER_PYTHON_FILE  ::/acs_tests/parser
