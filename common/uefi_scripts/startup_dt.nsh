@@ -155,6 +155,16 @@ for %p in 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 then
         echo " "
         echo "Running debug dump"
         FS%p:\acs_tests\debug\debug_dump.nsh
+
+        # Run the 64 KiB page attribute compliance check
+        if exist FS%p:\acs_tests\app\Runtime64KiBPageAttributeCheck.efi then
+            echo "Running Runtime64KiBPageAttributeCheck standalone app"
+            FS%p:\acs_tests\app\Runtime64KiBPageAttributeCheck.efi > NUL
+            echo "Runtime64KiBPageAttributeCheck - Run Completed"
+        else
+            echo "Runtime64KiBPageAttributeCheck.efi not found"
+        endif
+
         goto DoneDebug
     endif
 endfor

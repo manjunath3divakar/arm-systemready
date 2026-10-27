@@ -26,6 +26,7 @@ EXTRA_IMAGEDEPENDS += "bsa-acs \
                        ledge-efi \
                        update-vars \
                        uefi-dump \
+                       runtime64k-check \
                        ebbr-sct \
                        bootfs-files \
                        pfdi-acs \
@@ -49,6 +50,7 @@ IMAGE_EFI_BOOT_FILES += "Bsa.efi;acs_tests/bsa/Bsa.efi \
                          CapsuleApp.efi;acs_tests/app/CapsuleApp.efi \
                          UpdateVars.efi;acs_tests/app/UpdateVars.efi \
                          UefiDump.efi;acs_tests/app/UefiDump.efi \
+                         Runtime64KiBPageAttributeCheck.efi;acs_tests/app/Runtime64KiBPageAttributeCheck.efi \
                          Shell.efi;EFI/BOOT/Shell.efi \
 "
 SYSTEMREADY_COMMIT_LOG ?= "${TOPDIR}/../recipes-acs/bootfs-files/files/systemready-commit.log"
@@ -83,6 +85,14 @@ do_sign_images() {
 
     if [ -f DO_SIGN/acs_tests/app/UefiDump.efi ]; then
         sbsign --key $TEST_DB1_KEY --cert $TEST_DB1_CRT DO_SIGN/acs_tests/app/UefiDump.efi --output DO_SIGN/acs_tests/app/UefiDump.efi
+    fi
+
+    if [ -f DO_SIGN/acs_tests/app/Runtime64KiBPageAttributeCheck.efi ]; then
+        sbsign \
+            --key "$TEST_DB1_KEY" \
+            --cert "$TEST_DB1_CRT" \
+            DO_SIGN/acs_tests/app/Runtime64KiBPageAttributeCheck.efi \
+            --output DO_SIGN/acs_tests/app/Runtime64KiBPageAttributeCheck.efi
     fi
 
     echo "Signing images complete."
