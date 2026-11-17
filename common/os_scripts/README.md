@@ -134,6 +134,7 @@ ethtool-test.log
 ## Copying OS Logs for ACS Parser
 
 Please rename the subfolders to indicate the OS name and version. For example, rename 'linux-distro1-version' to 'linux-rhel-9.4'.
+
 It is recommended to choose one OS per group below.
 - Groups based on heritage: RHEL/Fedora/CentOS/AlmaLinux, SLES/openSUSE, Ubuntu/Debian, or NetBSD/OpenBSD/FreeBSD.
 - For example, you can choose RHEL, SLES, or Ubuntu for your testing.
