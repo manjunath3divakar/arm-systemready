@@ -2,7 +2,7 @@
 
 This is the **usage guide** for the SystemReady installed-OS diagnostic scripts. It covers the Linux diagnostics ZIP and the existing WinPE device/driver SystemReady scripts.
 
-For the overall **ACS results, firmware, manual-test and OS evidence directory structure** for **SystemReady SR and SystemReady-DT**, see the [Results Directory Structure guide](../../docs/README.md).
+For the overall **ACS results, firmware, manual-test and OS directory structure** for **SystemReady SR and SystemReady-DT**, see the [Results Directory Structure guide](../../docs/README.md).
 
 ## SystemReady Band OS Run Guide
 
