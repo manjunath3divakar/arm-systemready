@@ -162,15 +162,15 @@ acs_results_template/
             └── other OS logs
 ```
 
-The resulting files must be under `os-logs/linux-rhel-10.1/systemready-band-compliance-logs/`. Repeat for each tested OS, using the correct OS name and version. Collect `console.log` **separately** from reset through firmware, OS installation, and boot, and place it alongside the extracted folder. `linux_init.sh` does not create the serial-console log.
+> The resulting files must be under `os-logs/linux-rhel-10.1/systemready-band-compliance-logs/`. Repeat for each tested OS, using the correct OS name and version. Collect `console.log` **separately** from reset through firmware, OS installation, and boot, and place it alongside the extracted folder. `linux_init.sh` does not create the serial-console log.
 
+-----------------
 
 ## Windows Scripts
 
 ### device_driver_winpe.bat
 A batch script to capture **device driver** and **network configuration** information in **Windows Preinstallation Environment (WinPE)**, useful for system diagnostics.
 
----
 ### Setup
 Boot the system into the **Windows Preinstallation Environment (WinPE)**.
 
