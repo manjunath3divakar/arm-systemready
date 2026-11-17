@@ -152,7 +152,8 @@ Directory structure:
 ```text
 acs_results_template/
 └── os-logs/
-    └── linux-<os-name>/
+    └── linux-[distroname]-[distroversion] (ex: linux-rhel-10.1)/
+        └── console.log
         └── systemready-band-compliance-logs/
             ├── dmesg.txt
             ├── lspci.txt
