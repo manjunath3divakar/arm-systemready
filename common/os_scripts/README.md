@@ -147,7 +147,7 @@ Expected destination:
 acs_results_template/os-logs/<linux-os-name>/systemready-band-compliance-logs/
 ```
 
-Directory structure:
+Directory structure (the serial console log must be collected separately and placed under the corresponding Linux OS directory. The OS diagnostics scripts do not generate `console.log`):
 
 ```text
 acs_results_template/
@@ -163,8 +163,7 @@ acs_results_template/
             └── other OS logs
 ```
 
-> The resulting files must be under `os-logs/linux-rhel-10.1/systemready-band-compliance-logs/`. Repeat for each tested OS, using the correct OS name and version. Collect `console.log` **separately** from reset through firmware, OS installation, and boot, and place it alongside the extracted folder. `linux_init.sh` does not create the serial-console log.
-
+> The resulting files must be under `os-logs/linux-rhel-10.1/systemready-band-compliance-logs/`. Repeat for each tested OS, using the correct OS name and version.
 -----------------
 
 ## Windows Scripts
