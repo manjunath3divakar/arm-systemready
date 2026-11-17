@@ -4,11 +4,11 @@ This is the **usage guide** for the SystemReady installed-OS diagnostic scripts.
 
 For the overall **ACS results, firmware, manual-test and OS evidence directory structure** for **SystemReady SR and SystemReady-DT**, see the [Results Directory Structure guide](../../docs/README.md).
 
-# SystemReady Band OS Run Guide
+## SystemReady Band OS Run Guide
 
 The OS run collects debug logs from the installed operating system and runs additional Linux diagnostics. The generated logs are packaged so they can be copied into the ACS results template and validated by the parser.
 
-## Scripts Used
+### Scripts Used
 
 The OS run uses the following scripts:
 
@@ -41,7 +41,7 @@ linux_dump.sh
     └── restores OS time synchronization using chronyd or systemd-timesyncd when available
 ```
 
-## How to Run
+### How to Run
 
 #### Download and extract
 
@@ -63,7 +63,7 @@ chmod +x linux_init.sh
 sudo ./linux_init.sh --mode os
 ```
 
-## Generated Log Directory
+### Generated Log Directory
 
 The OS logs are generated under the user’s home directory:
 ```text
@@ -75,7 +75,7 @@ At the end of the run, the script creates:
 systemready-band-compliance-logs.tar.gz
 ```
 
-## Logs Collected
+### Logs Collected
 
 The OS run collects the following Linux debug logs:
 ```text
@@ -131,7 +131,7 @@ ethtool-test.log
 ```
 
 
-## Copying OS Logs for ACS Parser
+### Copying OS Logs for ACS Parser
 
 Please rename the subfolders to indicate the OS name and version. For example, rename 'linux-distro1-version' to 'linux-rhel-9.4'.
 
@@ -224,5 +224,3 @@ Alternatively, the generated `device_driver_winpe.log` can be downloaded or copi
 
 ---------------------------------
 *Copyright (c) 2025-2026, Arm Limited and Contributors. All rights reserved.*
-
-*Copyright (c) 2026, Arm Limited and Contributors. All rights reserved.*
