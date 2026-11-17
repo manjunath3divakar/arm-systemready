@@ -63,7 +63,7 @@ chmod +x linux_init.sh
 sudo ./linux_init.sh --mode os
 ```
 
-### Generated Log Directory
+#### Generated Log Directory
 
 The OS logs are generated under the user’s home directory:
 ```text
